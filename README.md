@@ -1,3 +1,6 @@
+<p style="color:#1e8a30">Thank you for your interest in laveau. The tool is currently still under development. If you would like to use this tool in the future, please put it on your watch list.</p>
+
+
 # laveau 
 
 <p align="center">
@@ -34,6 +37,12 @@ python 01_rdm2molecule.py <PATH:00_RCLASS_Graphs>
 ```console
 python 02_moleculeSubgraphPuzzle.py <PATH:01_Molecule_Graphs>
 ```
+### step 3: RCLASS graphs in DPO-Rules for the entire reaction
+```console
+python 03_reaction_DPOrules.py <PATH:01_Puzzled_Graphs>
+```
+### step 4:  generate Atom-to-Atom Maps
+
 ## Data 
 ## Citation
 
