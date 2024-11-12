@@ -75,7 +75,7 @@ The files List_BigRCLASSES.txt and List_ErrorRCLASS.txt are also created. List_B
 To process this list, the following call has to be run:
 
 ```console
-python 03_reationrules2DPO.py <PATH:03_Reaction Rules>
+python 03_reationrules2DPO.py <PATH:02_Pairwise_RDM_Pattern>
 ```
 A folder '03_DPO_Rule' with all DPO rules is created as output.
 The suffix number to the individual files, indicates the variants.
@@ -93,7 +93,7 @@ The MØD package is required for this step. Information on installation can be f
 After activating the conda environment with the MØD package, step 4 can be called with the following command:
 
 ```console
-mod -f 04_DPO2AAMs.py <PATH:01_Puzzled_Graphs>
+mod -f 04_DPO2AAMs.py <PATH:03_Reaction_Rules>
 ```
 
 The following files are created as output:
