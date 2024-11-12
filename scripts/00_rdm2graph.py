@@ -3,10 +3,10 @@ import sys
 import re 
 import matplotlib.pyplot as plt
 
-not_work = [] # List of reaction which could not be build up
-multiple_solutions = [] # List of reaction 
+not_work = []  # List of reactions which could not be built up
+multiple_solutions = [] # List of reaction
 
-# create lists of the R-Atoms, D-Atoms,M-Atoms for both reaction sides
+# Create lists of the R-atoms, D-atoms, M-atoms for both reaction sides
 def parse_equation(eq):
     left_r = []
     right_r = []
@@ -69,17 +69,15 @@ for line in lines:
     equations = []
     equation = line.strip().split('\t')
     
-    # check if there are undefined Atoms, if yes than skip this one
+    # check if there are undefined Atoms, if yes than skip
     check_atoms = True
     for substring in undefindedAtoms:
         if substring in equation[1]:
-            #print('SKIP',equation[0])
             count_undefinedAtoms = count_undefinedAtoms + 1         
             check_atoms = False
     if check_atoms == False: 
         continue
     
-    #print('NEXT RDM Pattern:',equation)
     rxn = equation[0]
     equations = equation[1].split(' ')
     
@@ -106,23 +104,23 @@ for line in lines:
             tree_right.add_node(parent_right)
             node_num = node_num+1 
 
-            # create leafs for D-Atoms
+            # Create leafs for D-atoms
             tree_left, node_num, attr_l = createNewLeaf(tree_left,left_d,'d',node_num, attr_l,'left',parent_left)
             tree_right, node_num, attr_r = createNewLeaf(tree_right,right_d,'d',node_num, attr_r,'right',parent_right)
             
-            # create leafs for M-Atoms
+            # Create leafs for M-atoms
             tree_left, node_num, attr_l = createNewLeaf(tree_left,left_m,'m',node_num, attr_l,'left',parent_left)
             tree_right, node_num, attr_r = createNewLeaf(tree_right,right_m,'m',node_num, attr_r,'right',parent_right)
               
-            # set attributes
+            # Set Attributes
             nx.set_node_attributes(tree_left, attr_l)
             nx.set_node_attributes(tree_right, attr_r)
 
-            # for writing file, but all created graphs in a list
+            # For writing file, but all created graphs in a list
             graphs_left.append(tree_left.copy())
             graphs_right.append(tree_right.copy())
 
-    # Create files with RDM Patterns as Graphs        
+    # Create files with RDM patterns as graphs       
     multi_graph = nx.MultiGraph() 
     for left_graph in graphs_left:         
         mapping1 = {}  

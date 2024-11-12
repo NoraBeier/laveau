@@ -27,7 +27,7 @@ def flatten(nested_list):
 
     return flat_list
 
-# load compound mol format form KEGG Database
+# Load compound mol format form KEGG Database
 def get_compound_mol(compound_id):
     url = f'http://rest.kegg.jp/get/compound:{compound_id}/mol'
     try:
@@ -38,7 +38,7 @@ def get_compound_mol(compound_id):
         print(f"Error in the request: {e}")
         return None
  
-# create the compound form KEGG mol data 
+# Create the compound from KEGG mol data 
 def mol_to_graph(mol_str):
     mol = Chem.MolFromMolBlock(mol_str)
     Chem.rdmolops.AssignStereochemistry(mol, force=True, cleanIt=True)
@@ -68,7 +68,7 @@ def node_matchD(a, b):
         return True
     return a['label'] == b['label']         
  
- # find all matches of the RCLass in the Molecule  
+# Find all matches of the RCLASS in the molecule    
 def subgraph_isomorphism_with_attributes(M,R,node_match_opt):
   
     def edge_match(a, b):
@@ -78,7 +78,7 @@ def subgraph_isomorphism_with_attributes(M,R,node_match_opt):
     subgraph_matches = list(GM.subgraph_monomorphisms_iter())       
     return subgraph_matches
 
-# check for perutaion of matching nodes (most because of hydrogens)       
+# Check for permutaion of matching nodes (most because of hydrogens)       
 def delete_sub_mappings(mapping):                
     unique_mappings = []
     seen_keys = set()
@@ -90,23 +90,22 @@ def delete_sub_mappings(mapping):
         unique_mappings.append(d)                                                              
     return unique_mappings   
  
-# adds the mapping from the RCLASS Graphs to the Reaction
+# Adds the mapping from the RCLASS graphs to the reaction
 def add_mapping(mappings,comp,rc,list_mapping_num,sides):
-    # copy maps and atomtypes vom RCLASS to Compound Graph
+    # Copy maps and atom types from RCLASS to compound graph
     mapped_comp = [comp]
     mapping_no = 0
     right_side = False
     for mapping in mappings:
         L = copy.deepcopy(comp)    
         
-        # if it is the right side, take the mappings from the left side
+        # If it is the right side, take the mappings from the left side
         if len(list_mapping_num) == 0:
             right_side = True
         for n in mapping.keys():   
             if not isinstance(rc.nodes[mapping[n]]['atomtype'],list):
                 rc.nodes[mapping[n]]['atomtype'] = [rc.nodes[mapping[n]]['atomtype']]     
             L.nodes[n]['atomtype'] = rc.nodes[mapping[n]]['atomtype']           
-            # add matched RCLASS comp_pair
             L.nodes[n]['comp_pair'] = sides 
             L_maps = []
             if right_side == True:
@@ -125,7 +124,7 @@ def add_mapping(mappings,comp,rc,list_mapping_num,sides):
         if L not in mapped_comp:
             mapped_comp.append(L)    
      
-    # combine double Mapping on one Molecule
+    # Combine double mapping on one molecule
     mapping_no_copy = mapping_no
     if len(mapped_comp) > 2:
         combinations = []
@@ -151,7 +150,7 @@ def add_mapping(mappings,comp,rc,list_mapping_num,sides):
                                 else: 
                                     H.nodes[n]['atomtype'].append(G.nodes[n]['atomtype'])
   
-                                # add new mapping_no to differ the same RCLASSes
+                                # Add new mapping_no to distinguish the same RCLASSes
                                 if not isinstance(H.nodes[n]['map'],list):
                                     H.nodes[n]['map'] = [H.nodes[n]['map']] 
                                 map_att_new = []  
@@ -240,8 +239,8 @@ def find_Datoms(Side,Otherside):
         new_Otherside.append([graph_copy])
     Otherside = new_Otherside  
     for l in Side:
-        # create subgraphs with D-Atoms which are not covered with other RCLASSes
-        # it listet also diffrent versions: dominante D (all nodes with D), restricted D (all nodes only with D)
+        # Create subgraphs with D-atoms which are not covered by other RCLASSes
+        # It lists also different versions: Dominant D (all nodes with D), restricted D (all nodes only with D)
         d_list = []
         d_sub = create_subgraph_with_DAtoms(l)
         d_list.append(d_sub.copy())  
@@ -249,7 +248,7 @@ def find_Datoms(Side,Otherside):
         d_list.append(d_taut)
    
         for d in d_list:   
-            # remove the Hydrogen atoms
+            # Remove the Hydrogen atoms
             hydrogens = []
             for n in d.nodes():
                 a = d.nodes[n]
@@ -257,26 +256,26 @@ def find_Datoms(Side,Otherside):
                     hydrogens.append(n)
             d.remove_nodes_from(hydrogens)
             
-            # define forbitten Molecules
+            # Define forbidden molecules
             forbidden_mol = []       
             for n in d.nodes():
                 for m in d.nodes[n]['comp_pair']:
                     if m not in forbidden_mol:
                         forbidden_mol.append(m)
 
-            # find D subgraphs
+            # Find D subgraphs
             if len(d.nodes()) > 0:
                 for r in range(len(Otherside)):        
                     for graph in range(len(Otherside[r])):                  
 
-                        # find Mappings of D_sub on Otherside              
+                        # Find mappings of D_sub on Otherside              
                         mapping_datom = subgraph_isomorphism_with_attributes(Otherside[r][graph],d,node_matchD)                   
                         mapping_datom_mod = delete_sub_mappings(mapping_datom)
                            
                         if len(mapping_datom_mod) > 1000:
                             continue
                         for mapping in mapping_datom_mod:       
-                                # check if the matching are R-/M-Atoms or only D-Atoms or no atomtypes at all
+                                # Check if the matching are R-/M-atoms or only D-atoms or no atom types at all
                                 RM_true = False
                                 D_true = False
                                 noAT_true = False
@@ -307,7 +306,7 @@ def find_Datoms(Side,Otherside):
                                 if AT_check == False:
                                     continue
       
-                                # add the found D-Subgraphs in the Molecules
+                                # Add the found D-subgraphs in the moleculess
                                 r_copy = copy.deepcopy(Otherside[r][graph])                                   
                                 for node in mapping.keys():
                                     if 'map' in r_copy.nodes[node]:
@@ -356,7 +355,7 @@ def find_atommaps(graph):
                       
     return sorted(r_atommap_set), sorted(m_atommap_set)
 
-# translate the nx bond names to the MOD bond names 
+# Translate the nx bond names to the MOD bond names 
 def update_bound_attribute(G):
     for u, v in G.edges():
         data = G.edges[u,v]
@@ -371,10 +370,10 @@ def update_bound_attribute(G):
             data['label'] = '#'                      
     return G
      
-# Merge the RCLASS graphs with each other    
+# Merge the RCLASS graphs with each other 
 def add_Mappings(combined_list):  
 
-        max_combinations = 1000   # test 10000 is to much
+        max_combinations = 1000   
         combinations = list(itertools.islice(itertools.product(*combined_list),max_combinations))
 
         if len(combinations) == max_combinations:
@@ -385,7 +384,7 @@ def add_Mappings(combined_list):
             transposed = zip(*comb)
             overlapping_graphs.append(list(map(list, transposed)))
 
-        # funktion checks if a map is already in the node
+        # Function checks if a map is already in the node
         def add_overlapping_maps(n1,n2):
             add_mapList = []
             add_atomtypeList = []
@@ -399,7 +398,7 @@ def add_Mappings(combined_list):
                     add_atomtypeList.append(n2['atomtype'][i])
             return add_mapList,add_atomtypeList
             
-        # add maps of the other RCLASSES to the Graphs          
+        # Add maps of the other RCLASSES to the Graphs          
         for i in overlapping_graphs:
             molecule_List = []
             for mol in i:
@@ -410,16 +409,16 @@ def add_Mappings(combined_list):
                     if mol[g2] == False:
                         continue
                     G2 = copy.deepcopy(mol[g2])
-                    for n in G1.nodes.keys(): # add mapping from other RCLASS          
-                        # find the nodes which were mapped in Overlapping Graph an add it to the fist graph
+                    for n in G1.nodes.keys(): # Add mapping from other RCLASS          
+                        # Find the nodes which were mapped in Overlapping Graph an add it to the fist graph
                         if 'atomtype' in G2.nodes[n]: 
                             if 'atomtype' in G1.nodes[n]:    
                                 if isinstance(G1.nodes[n]['atomtype'],list):
-                                    if isinstance(G2.nodes[n]['atomtype'],list): #both are lists
+                                    if isinstance(G2.nodes[n]['atomtype'],list): #Both are lists
                                         add_mapList,add_atomtypeList = add_overlapping_maps(G1.nodes[n],G2.nodes[n])
                                         G1.nodes[n]['atomtype'].extend(add_atomtypeList)
                                         G1.nodes[n]['map'].extend(add_mapList)
-                                    else: # only G1 is a List
+                                    else: # only G1 is a list
                                         G2.nodes[n]['atomtype'] = [G2.nodes[n]['atomtype']]
                                         if isinstance(G2.nodes[n]['map'],list):
                                             G2.nodes[n]['map'] = [G2.nodes[n]['map']]
@@ -441,7 +440,7 @@ def add_Mappings(combined_list):
                                         add_mapList,add_atomtypeList = add_overlapping_maps(G1.nodes[n],G2.nodes[n])
                                         G1.nodes[n]['atomtype'].extend(add_atomtypeList)
                                         G1.nodes[n]['map'].extend(add_mapList)
-                            else: # G1 has no atomtype
+                            else: # G1 has no atom type
                                 G1.nodes[n]['atomtype'] = G2.nodes[n]['atomtype']
                                 G1.nodes[n]['comp_pair'] = G2.nodes[n]['comp_pair']
                                 G1.nodes[n]['map'] = G2.nodes[n]['map']                                                       
@@ -451,8 +450,9 @@ def add_Mappings(combined_list):
         return Side      
       
 def rclass_inAllAtomtype_Versions(g1,g2):
-    # NOTE if g2 == None then the case occurs where several RCLASSes come on top of each other -> There only M has dominance, otherwise the overlaps are from one RCLASS itself, there D or M can dominate
-    # If R-Atom ind atomtype then always selected as R-Atom 
+    ''' NOTE if g2 == None then the case occurs where several RCLASSes come on top of each other -> There only M has dominance, 
+    otherwise the overlaps are from one RCLASS itself, there D or M can dominate '''
+    # If R-Atom is in atom type then always selected as R-Atom 
     def domoinant_Atomtype(g,t):    
         for node in g.nodes():
             data = g.nodes[node]
@@ -470,12 +470,12 @@ def rclass_inAllAtomtype_Versions(g1,g2):
                         data['atomtype'] = new_a  
                         data['map'] = new_m
 
-    # Dominant R-Atom
+    # Dominant R-atom
     domoinant_Atomtype(g1,'r')
     if g2 != None:
         domoinant_Atomtype(g2,'r')
                     
-    #check if double assignment of atom types M and D take place at all
+    # Check if double assignments of atom types M and D take place at all
     case_check = False
     for node in g1.nodes():
         data = g1.nodes[node]
@@ -496,10 +496,10 @@ def rclass_inAllAtomtype_Versions(g1,g2):
             g2_D = copy.deepcopy(g2)    
         else:
             g1_M = copy.deepcopy(g1)
-        # Dominant M-Atom
+        # Dominant M-atom
         domoinant_Atomtype(g1_M,'m')
         if g2 != None:
-            # Domonant D-Atom alternativ
+            # Dominant D-atom alternative
             domoinant_Atomtype(g1_D,'d')
             domoinant_Atomtype(g2_M,'m')
             domoinant_Atomtype(g2_D,'d')    
@@ -524,14 +524,14 @@ def find_connected_nodes(graph, nodes):
     for i in list(connected_nodes):
         atomlabel_list.append(graph.nodes[i]['label'])
     return connected_nodes,atomlabel_list
-             
-             
-#spezial case CO2: When C03 is eliminated, the D subgraph cannot be found, as the single bond from an oxygen to carbon becomes a double bond.       
-#The function finds this special situation and maps the D atoms 
+                          
+'''Spezial case CO2: When CO3 is eliminated, the D subgraph cannot be found, 
+as the single bond from an oxygen to carbon becomes a double bond.'''
+# The function finds this special situation and maps the D-atoms 
 def c02_case(side1,side2,marker1,marker2,node_no,dict_node,Context_Text):       
     seen_dnodes = []
     if any(data.get('comp') == 'C00011' for _, data in side1.nodes(data=True)):
-        # find the missing D-Atom Subgraph without hydrogens
+        # Find the missing D-atom subgraph without hydrogens
         d_sub = create_subgraph_with_DAtoms(side2)
         d = d_sub.copy()
         hydrogens = []
@@ -547,7 +547,7 @@ def c02_case(side1,side2,marker1,marker2,node_no,dict_node,Context_Text):
                 if side1.nodes[node_r]['comp'] == 'C00011':
                     for node_l in co2_nodes:
                         if str(node_l+marker2) not in seen_dnodes and str(node_r+marker1) not in seen_dnodes and side1.nodes[node_r]['label'] == d.nodes[node_l]['label']:
-                            dict_node[node_no] = [node_l,node_r] #New No. = [old No. L, old No. R]
+                            dict_node[node_no] = [node_l,node_r]
                             Context_Text.append('  node [ id '+ str(node_no) + ' label "'+ d.nodes[node_l]['label'] +'" ]\n')
                             node_no = node_no + 1
                             seen_dnodes.append(str(node_l+marker2))
@@ -555,7 +555,7 @@ def c02_case(side1,side2,marker1,marker2,node_no,dict_node,Context_Text):
                             break
     return node_no,dict_node,Context_Text
 
-# correct the elemination of molecule parts into small molecules                          
+# Correct the elimination of molecule parts into small molecules                         
 def smallMolecule_Corr(graph,S,Context_Text,Left_Text,Right_Text,node_no,dict_node):
     small_result = True
     for node in graph.nodes:
@@ -564,19 +564,19 @@ def smallMolecule_Corr(graph,S,Context_Text,Left_Text,Right_Text,node_no,dict_no
             neighbors = [n for n in graph.neighbors(node) if graph.nodes[n].get('label') != 'H']
             non_atomtype_neighbors = [n for n in neighbors if 'atomtype' not in graph.nodes[n]]
             atomtype_neighbors = [n for n in neighbors if 'atomtype' in graph.nodes[n]]
-            # if there is a Neighbor with is part of the reaction rule than no filling of hydrogens is necessary
+            # If there is a neighbor which is part of the reaction rule then no filling of hydrogens is necessary
             if atomtype_neighbors:
                 small_result = None
             if len(non_atomtype_neighbors) == 0:
                 small_result = True
                 continue
-            # if there are only one non-hydrogen neighbor return the node end the edge for corraction     
+            # If there is only one non-hydrogen neighbor then return the node and the edge for correction   
             if len(non_atomtype_neighbors) == 1:
                 neighbor = non_atomtype_neighbors[0]
                 edge_attributes = graph.get_edge_data(node, neighbor)
                 small_result = [neighbor, edge_attributes,node]  
                 
-                # check for dopple bond oxygens in the neighborhood of the non_atomtype_neighbors
+                 # Check for double bond oxygens in the neighborhood of the non_atomtype_neighbors
                 alcohol = False
                 neighbors_of_non_atomtype_neighbors = [n for n in graph.neighbors(neighbor) if graph.nodes[n].get('label') == 'O' and  'atomtype' not in graph.nodes[n]]
                 if len(neighbors_of_non_atomtype_neighbors) > 0:
@@ -584,9 +584,9 @@ def smallMolecule_Corr(graph,S,Context_Text,Left_Text,Right_Text,node_no,dict_no
                         alcohols = [n for n in graph.neighbors(oxygen) if graph.nodes[oxygen].get('label') == 'H']
                         alcohol = True
            
-            # add bond changing and hydrogens to rule 
+            # Add bond changing and hydrogens to rule 
             if small_result != None and small_result != False:
-                # add neighbor atom
+                # Add neighbor atom
                 Context_Text.append('  node [ id '+ str(node_no) + ' label "'+ graph.nodes[small_result[0]]['label'] +'" ]\n')
                 no_small = str(node_no)
                 node_no = node_no + 1                                                         
@@ -602,7 +602,7 @@ def smallMolecule_Corr(graph,S,Context_Text,Left_Text,Right_Text,node_no,dict_no
                 if small_result[1] == {'label': 3.0}:
                     bond_label = '#'
                     h = 3                                                       
-                # add edge     
+                # Add edge    
                 for nr in dict_node.keys():
                     if S =='L':
                         if small_result[2] == dict_node[nr][0]:
@@ -610,7 +610,7 @@ def smallMolecule_Corr(graph,S,Context_Text,Left_Text,Right_Text,node_no,dict_no
                     if S =='R':
                         if small_result[2] == dict_node[nr][1]:                                          
                             Right_Text.append('  edge [ source '+ str(nr) + ' target '+ no_small + ' label "'+ bond_label + '" ]\n')                 
-                # add hydrogens                                                            
+                # Add hydrogens                                                            
                 while h > 0 and alcohol == False:
                     if S == 'L':
                         Left_Text.append('  node [ id '+ str(node_no) + ' label "H+" ]\n')
@@ -656,12 +656,12 @@ def findRCLASS_inMOL(compound,sides,toBig,S,reaction_with_mapping):
     
     return reaction_with_mapping, toBig
                  
-# Stats
-no_reactions = 0 #No. of TOTAL Reactions
-no_reactions_false = 0 #No. of Reaction were no DPO-Rule could be created      
-no_reactions_true = 0 #No. of Reaction were a DPO-Rule succsesful could be created         
-no_reaction_toBig = 0 #No. of Reaction were the combinatorics became too big
-missing_comp = 0 #No. of missing Compounds
+# Statistics
+no_reactions = 0 # Number of TOTAL Reactions
+no_reactions_false = 0 # Number. of reactions were no DPO-Rule could be created           
+no_reactions_true = 0 # Number of reactions were a DPO-Rule successful could be created               
+no_reaction_toBig = 0 # Number of reactions were the combinatorics became too big
+missing_comp = 0 # Number of missing compounds
 
 
 if not os.path.exists('./03_stats'):
@@ -672,7 +672,7 @@ log_big = './03_stats/ToBigReactions.log'
 log_missC = './03_stats/faild_Compounds.txt'
 
 
-# load reaction data
+# Load reaction data
 reactions = {}
 input_path = './Additional_Files/REACTION_RCLASS_DATA.txt'
 with open(input_path,'r') as in_f:
@@ -695,12 +695,13 @@ for line in lines:
             comp = None
             rc = None  
 
-# start progress   
+# Start progress  
+input_path = sys.argv[2]
 for rn in reactions.keys():
-        toBig = False #markes if some cases has to be scipted because of combinatoric explosion    
+        toBig = False # Marks if some cases have to be scripted because of combinatoric explosion   
         no_reactions = no_reactions+1   
         print('START REACTION', rn)
-        # load RCLASS 
+        # Load RCLASS  
         rxn_split = reactions[rn]['rclass'].split("'")
         rc_list = []
         rc_comp_list = []
@@ -711,11 +712,11 @@ for rn in reactions.keys():
             elif rc.startswith('C'):
                 rc_comp_list.append(rc)
         
-        #check if there are RCLASSes listed
+        #Check if there are RCLASSes listed
         if len(rc_list) == 0:
             exit()
         else:
-            rclass_num = len(rc_list) # is used later to check the right number of R-Atoms
+            rclass_num = len(rc_list) # Is used later to check the right number of R-atoms
             
         for rc in range(len(rc_list)):
             filepath = input_path+rc_list[rc]
@@ -734,13 +735,13 @@ for rn in reactions.keys():
         if len(gml_files) == 0:
             exit()
             
-        # List of compounds which RCLASS are discribring
+        # List of compounds which RCLASS are describing
         rc_comp = []
         for c in rc_comp_list:
             c = c.split('_')
             rc_comp = rc_comp + c
 
-        # build reaction
+        # Build reaction
         reaction = {}
         reaction['Left'] = []
         reaction['Right'] = []
@@ -769,7 +770,7 @@ for rn in reactions.keys():
                     compund_list = []
                     break
                 g1 = mol_to_graph(m1)                
-                # add compound name to graph
+                # Add compound name to graph
                 for n in g1.nodes():
                     g1.nodes[n]['comp'] = entry[1]
                 
@@ -801,7 +802,7 @@ for rn in reactions.keys():
                     compund_list = []
                     break
                 g1 = mol_to_graph(m1) 
-                # add compound name to graph
+                # Add compound name to graph
                 for n in g1.nodes():
                     g1.nodes[n]['comp'] = entry[1]       
                 count = entry[0]
@@ -825,8 +826,9 @@ for rn in reactions.keys():
         reaction['Right'] = compund_list
 
         # Combine all the possibilities of RCLASSes
-        # A list is created which shows the reactions with the respective mapped RCLASS: [(Compound Pair of RCLASS]{'Left':[{'comp','comp_graph','rc_graph','mapping'},{...}],'Right':[{...},{...}]})]   
-        inc = 100 # number unique map ids
+        ''' A list is created which shows the reactions with the respective mapped RCLASS: 
+        [(Compound Pair of RCLASS]{'Left':[{'comp','comp_graph','rc_graph','mapping'},{...}],'Right':[{...},{...}]})] '''    
+        inc = 100 # Number unique map IDs
         mapping_RCLASS = {}        
         for comp_pair in rc_graphs.keys():   
             mol_withMapping = []
@@ -835,7 +837,7 @@ for rn in reactions.keys():
                 sides = k.split('_')  
                 rc_combis = list(product(rc_graphs[comp_pair][k]['left'],rc_graphs[comp_pair][k]['right']))
 
-            # build all atomytpe versions 
+            # Build all atom type versions 
             rc_combis_new = []
             for rc in rc_combis:
                 rc = rclass_inAllAtomtype_Versions(rc[0],rc[1])             
@@ -846,7 +848,7 @@ for rn in reactions.keys():
                 toBig = True
                 count_graph = len(rc_combis)
                 break            
-            # try every combination of RCLASS
+            # Try every combination of RCLASS
             for rc in rc_combis:
                 for r in rc:         
                     give_unique_map(r[0], inc)
@@ -854,9 +856,9 @@ for rn in reactions.keys():
                     reaction_with_mapping = {}
                     reaction_with_mapping['Left'] = []
                     reaction_with_mapping['Right'] = []
-                    switch = False # information if rclass compunds have do be switched
+                    switch = False # Information if RCLASS compounds have to be switched
  
-                    # left side matching of the linked compound 
+                    # Left side matching of the linked compound 
                     for compound in reaction['Left']:   
 
                         reaction_with_mapping,toBig = findRCLASS_inMOL(compound,sides,toBig,'Left',reaction_with_mapping)
@@ -873,7 +875,7 @@ for rn in reactions.keys():
                     if not reaction_with_mapping: 
                         break
                         
-                    # right side matching of the linked compound               
+                    #  Right side matching of the linked compound                
                     for compound in reaction['Right']:                             
                         reaction_with_mapping,toBig = findRCLASS_inMOL(compound,sides,toBig,'Right',reaction_with_mapping)
                         if not reaction_with_mapping:  
@@ -896,7 +898,7 @@ for rn in reactions.keys():
                     if not reaction_with_mapping:
                         break                     
 
-                    # overwrite mapping information from RCLASS to reaction metabolite for each mapping alternative             
+                    # Overwrite mapping information from RCLASS to reaction metabolite for each mapping alternative               
                     list_mapping_num = []
                     for l in reaction_with_mapping['Left']:
                         if l['mapping'] != None:                                           
@@ -934,7 +936,7 @@ for rn in reactions.keys():
             for r in mapping_RCLASS[rc_var]:
                 l_side = []
                 r_side = []   
-                # filtere mapped compounds out 
+                # Filter out mapped compoundst 
                 for dict_comp in r['Left']: 
                     if isinstance(dict_comp['comp_graph'],list):
                         l_side.append(dict_comp['comp_graph']) 
@@ -948,7 +950,7 @@ for rn in reactions.keys():
                 left_side.append(l_side)
                 right_side.append(r_side)
                 
-            # create all Combinations of mapped molecules
+            # Create all combinations of mapped molecules
             combined_list_right = []
             combined_list_left = []
             for sublist in left_side:
@@ -959,11 +961,11 @@ for rn in reactions.keys():
                         combined_list_right.append(combined_sublist)
 
                             
-        # all feasible mappings from both reaction sides                 
+        # All feasible mappings from both reaction sides                   
         Left = add_Mappings(combined_list_left)       
         Right = add_Mappings(combined_list_right)  
 
-        #clear of dominant Atoms (R- over M- over D-Atoms)
+        # Remove of dominant Atoms (R- over M- over D-Atoms)
         new = []
         for L in Left:
                 l_new = []
@@ -982,10 +984,10 @@ for rn in reactions.keys():
         Right = new                               
         if Left == False or Right == False:
                 continue                      
-        # create Rules 
+        # Create rules  
         no = 1
         succ = False   
-        # filter to big Reactions
+        # Filter too big reactions
         if len(Left)>1000:
                 count_graph = len(Left)
                 toBig = True
@@ -997,7 +999,7 @@ for rn in reactions.keys():
        
         for L in Left:                        
                 for R in Right:               
-                    # filter Cases I with to much Molecules
+                    # Filter cases I with too many molecules
                     L_new = []
                     for i in L:
                         if len(i)<1000:
@@ -1013,11 +1015,11 @@ for rn in reactions.keys():
                             count_graph = len(i)
                             toBig = True    
                     
-                    # find for all combinations of D-Atoms matching
+                    # Find all combinations of D-atoms matching
                     Right1 = find_Datoms(L_new,R_new)                    
                     Left1 = find_Datoms(R_new,L_new)
 
-                    # filter Cases II with to much D-Atom mapped Subgraphs
+                    # Filter cases II with too many D-atom mapped subgraphs
                     def count_entries(data):
                         count = 0
                         for sublist in data:
@@ -1045,9 +1047,9 @@ for rn in reactions.keys():
                         count_graph = len(Right1)
                         continue
                            
-                    #try all combinations for every D-Atom Matching
+                    # Try all combinations for every D-atom matching
                     for l1 in Left1:                        
-                        # compose all molecule at left side together
+                        # Compose all molecules at left side together
                         Left_new = []
                         graph_num = 0
                         for left in l1:
@@ -1056,24 +1058,20 @@ for rn in reactions.keys():
                             graph_num = graph_num + 1       
                             Left_new.append(l)
                         if len(Left_new) == 0:
-                            #print('if len(Left_new) == 0:')
                             break
 
                         Left_new = nx.compose_all(Left_new)     
-                        
-                                           
+                                                                 
                         # Resolve unwanted nesting of map lists 
                         for n,data in Left_new.nodes(data=True):
                             if 'map' in data:
                                 Left_new.nodes[n]['map'] = flatten(Left_new.nodes[n]['map'])  
-                       
-                       
-                        # write DPO-Rules for all possibile reaction atom to atom maps     
-                        # create Lists of the Atommaps for all Atom Typs        
+                                              
+                        # Write DPO-Rules for all possible reaction atom to atom maps          
                         r_nodes_Left, m_nodes_Left = find_atommaps(Left_new)                                              
                         for r1 in Right1:   
                             if len(r1) != 0:
-                                # compose all molecule at right side together
+                                # Compose all molecules at right side together
                                 Right_new = []
                                 graph_num = 0       
                                 for right in r1:
@@ -1085,13 +1083,13 @@ for rn in reactions.keys():
                                 if len(Right_new) == 0:
                                     continue
                            
-                                # Resolve unwanted nesting of map lists 
+                                # Resolve unwanted nesting of map lists
                                 for n,data in  Right_new.nodes(data=True):
                                     if 'map' in data:
                                         Right_new.nodes[n]['map'] = flatten(Right_new.nodes[n]['map'])   
                              
-                                # write DPO-Rules for all possibile reaction atom to atom maps     
-                                # create Lists of the Atommaps for all Atom Typs  
+                                # Write DPO-Rules for all possible reaction atom to atom maps   
+                                # Create Lists of the atom maps for all atom types   
                                 r_nodes_Right, m_nodes_Right = find_atommaps(Right_new) 
                                 if len(r_nodes_Left) ==  0 or len(r_nodes_Right) == 0:
                                     continue
@@ -1102,15 +1100,15 @@ for rn in reactions.keys():
                                 if len(r_nodes_Left) != len(r_nodes_Right) or len(m_nodes_Left) != len(m_nodes_Right):                                          
                                     continue  
                                
-                                # genarate the DPO for all possibile atom-to-atom maps
-                                # Initiallise lists with the entries to be written for each part of the DPO rule
+                                # Generate the DPO for all possible atom-to-atom maps
+                                # Initialize lists with the entries to be written for each part of the DPO rule
                                 Left_Text = []
                                 Context_Text = []
                                 Right_Text = []  
-                                node_no = 1 # new node number system for DPO rule 
-                                dict_node = {} # dictonary for rewrite edges with new number system
+                                node_no = 1 # New node number system for DPO rule
+                                dict_node = {} # Dictonary to rewrite edges with new number system
                                                                                        
-                                #check for right Number of R-/D- and M-Atoms
+                                # Check for right Number of R-/D- and M-atoms
                                 left_R_atoms = []
                                 left_D_atoms = []
                                 left_M_atoms = []
@@ -1141,7 +1139,7 @@ for rn in reactions.keys():
                                 if len(left_R_atoms) != len(right_R_atoms) or len(left_M_atoms) != len(right_M_atoms):                                                         
                                     continue           
                                                                                                                       
-                                # write R-Atoms      
+                                # Write R-atoms      
                                 seen_nodes = []                
                                 found_maps = []    
                                 hydrogen_left = []
@@ -1175,13 +1173,13 @@ for rn in reactions.keys():
                                                                         
                                             if [node_l,node_r] not in dict_node.values():
                                                 Context_Text.append('  node [ id '+ str(node_no) + ' label "'+ atom_l +'" ]\n')
-                                                dict_node[node_no] = [node_l,node_r] #New No. = [old No. L, old No. R]
+                                                dict_node[node_no] = [node_l,node_r] 
                                                 node_no = node_no + 1
 
-                                # check if all R_Atoms were found on both sides
+                                # Check if all R-atoms were found on both sides
                                 if len(found_maps) != len(r_nodes_Left):
                                    continue                                
-                                # write R-Hydrogen                                
+                                # Write R-hydrogen                                    
                                 for node in Left_new.nodes():
                                     if 'map' in Left_new.nodes[node]:
                                         if Left_new.nodes[node]['label'] == 'H' and 'r' in Left_new.nodes[node]['atomtype']:
@@ -1216,26 +1214,26 @@ for rn in reactions.keys():
                                             hydrogen_left.append(None)  
                                             hydrogen_right.append(node)          
                              
-                                # if no hydrogens got lost than write then in the contect 
-                                # if Right Graph has more hydrogens then write this one in Right and as H+ in Left          
+                                # If no hydrogens got lost then write them in the Context  
+                                # If right graph has more hydrogens then write this one in right and as H+ in left        
                                 for i in range(len(hydrogen_left)):
                                     if [hydrogen_left[i],hydrogen_right[i]] not in dict_node.values() and hydrogen_left[i] != None and hydrogen_right[i] != None:
                                         Context_Text.append('  node [ id '+ str(node_no) + ' label "H" ]\n')
-                                        dict_node[node_no] = [hydrogen_left[i],hydrogen_right[i]] #New No. = [old No. L, old No. R]
+                                        dict_node[node_no] = [hydrogen_left[i],hydrogen_right[i]] 
                                         node_no = node_no + 1    
                                     elif [hydrogen_left[i],hydrogen_right[i]] not in dict_node.values() and hydrogen_left[i] == None and hydrogen_right[i] != None:
                                         Left_Text.append('  node [ id '+ str(node_no) + ' label "H+" ]\n')
                                         Right_Text.append('  node [ id '+ str(node_no) + ' label "H" ]\n')
-                                        dict_node[node_no] = [None,hydrogen_right[i]] #New No. = [old No. L, old No. R]
+                                        dict_node[node_no] = [None,hydrogen_right[i]] 
                                         node_no = node_no + 1                     
                                     elif [hydrogen_left[i],hydrogen_right[i]] not in dict_node.values() and hydrogen_left[i] != None and hydrogen_right[i] == None:
                                         Right_Text.append('  node [ id '+ str(node_no) + ' label "H+" ]\n')
                                         Left_Text.append('  node [ id '+ str(node_no) + ' label "H" ]\n')
-                                        dict_node[node_no] = [hydrogen_left[i],None] #New No. = [old No. L, old No. R]
+                                        dict_node[node_no] = [hydrogen_left[i],None] 
                                         node_no = node_no + 1         
          
-                                # write D-Atoms        
-                                D_check = True # turn in to False if D-Atom has no Patner, and mark the side where the Partner is missing   
+                                # write D-atoms        
+                                D_check = True # Turn into False if D-atom has no partner, and mark the side where the partner is missing     
                                 for node_l in Left_new.nodes(): 
                                     attrs = Left_new.nodes[node_l]
                                     if 'map' not in attrs:
@@ -1250,13 +1248,13 @@ for rn in reactions.keys():
                                                 continue       
                                             if attrs['map'] == map_l and atom_l == attrs['label'] and node_r not in seen_nodes:
                                                 D_check = True
-                                                dict_node[node_no] = [node_l,node_r] #New No. = [old No. L, old No. R]
+                                                dict_node[node_no] = [node_l,node_r]
                                                 Context_Text.append('  node [ id '+ str(node_no) + ' label "'+ atom_l +'" ]\n')
                                                 node_no = node_no + 1
                                                 seen_nodes.append(node_r)
                                                 break
 
-                                # check D-Atom Partners also for the Right Side
+                                # Check D-atom partners also for the right side
                                 for node_r in Right_new.nodes(): 
                                     attrs = Right_new.nodes[node_r]
                                     if 'map' not in attrs:
@@ -1275,17 +1273,16 @@ for rn in reactions.keys():
                                             if attrs['map'] == map_r and atom_r == attrs['label'] and node_l not in seen_nodes:
                                                 D_check = True           
 
-                                # if one D Atom has no partner -> check for spezial CO2 Case
+                                # If one D-atom has no partner then check for special CO2 Case
                                 if D_check != True:
                                     if D_check == 'Left':
                                         node_no,dict_node,Context_Text = c02_case(Left_new,Right_new,'L','R',node_no,dict_node,Context_Text)
                                     if D_check == 'Right':
-                                        node_no,dict_node,Context_Text = c02_case(Right_new,Left_new,'R','L',node_no,dict_node,Context_Text)      
-                                        #print('New Context',Context_Text)           
+                                        node_no,dict_node,Context_Text = c02_case(Right_new,Left_new,'R','L',node_no,dict_node,Context_Text)                
                                     if D_check == 'Both':
                                         node_no,dict_node,Context_Text = c02_case(Left_new,Right_new,'L','R',node_no,dict_node,Context_Text)
                                         node_no,dict_node,Context_Text = c02_case(Right_new,Left_new,'R','L',node_no,dict_node,Context_Text) 
-                                    # check again if D-Atoms have missing partners
+                                    # Check again if D-Atoms have missing partners
                                     for n in Left_new.nodes():                                  
                                         if 'atomtype' in Left_new.nodes[n]:
                                             if 'd' in Left_new.nodes[n]['atomtype'] and Left_new.nodes[n]['label'] != 'H':
@@ -1305,21 +1302,20 @@ for rn in reactions.keys():
                                                         D_check = True
                                                 if D_check == False:
                                                     break  
-                                    # if still D_check Fails -> -> Atom to Atom Map not complete! Try Next Combi
+                                    # If D_check still fails then the Atom to Atom Map is not complete! Continue with the next Combination
                                     if D_check == False:
                                         continue
                                                             
-                                # correced of small molecules
+                                # Correction of small molecules
                                 Context_Text,Left_Text,Right_Text,node_no = smallMolecule_Corr(Left_new,'L',Context_Text,Left_Text,Right_Text,node_no,dict_node)
-                                #if the mapped the D-Atom to a bigger structure the mapping is probably wrong
                                 if Context_Text == False:
                                     continue 
                                 Context_Text,Left_Text,Right_Text,node_no = smallMolecule_Corr(Right_new,'R',Context_Text,Left_Text,Right_Text,node_no,dict_node)
                                 if Context_Text == False:
                                     continue 
                                     
-                                # write M-Atoms
-                                #  inicialize control structures
+                                # Write M-Atoms
+                                #  Initialize control structures
                                 m_nodes_no = 0
                                 for i in Left_new.nodes():
                                     if 'map' in Left_new.nodes[i]:
@@ -1327,15 +1323,15 @@ for rn in reactions.keys():
                                             m_nodes_no = m_nodes_no + 1 
                                             
                                 seen_nodes = []                        
-                                # find the matching non hydrogen M-Atoms 
+                                # Find the matching non hydrogen M-atoms  
                                 for m in range(len(m_nodes_Left)): 
-                                    # find node with Atommap ID
+                                    # Find node with Atommap ID
                                     for node_l in Left_new.nodes():      
                                         attrs1 = Left_new.nodes[node_l]  
                                         if 'map' in attrs1:                                
                                             if m_nodes_Left[m] in attrs1['map'] and 'r' not in attrs1['atomtype'] and attrs1['label'] != 'H':
                                                 atom_l = attrs1['label']  
-                                                # find corresponding M-Atom on the Right Side
+                                                # Find corresponding M-atom on the right side
                                                 for node in Right_new.nodes():
                                                     attrs2 = Right_new.nodes[node]
                                                     if 'map' in attrs2:
@@ -1347,7 +1343,7 @@ for rn in reactions.keys():
                                                                 node_r = node 
                                                                 seen_nodes.append(node)                                                  
                                                             else:
-                                                                # check if all maps fit together
+                                                                # Check if all maps fit together
                                                                 fit_check = True
                                                                 for i in range(len(attrs2['map'])):
                                                                     if attrs2['map'][i] in m_nodes_Right and attrs1['map'][i] in m_nodes_Left:
@@ -1358,7 +1354,7 @@ for rn in reactions.keys():
                                                                         fit_check = False
                                                                         break
                                                                 if fit_check == True:   
-                                                                    # check if the neighborhood is the same
+                                                                    # Check if the neighborhood is the same
                                                                     m_neighbors_left = [n for n in Left_new.neighbors(node_l) if Left_new.nodes[n].get('label') != 'H']  
                                                                     list_neighbor_atoms_left = [Left_new.nodes[n].get('label') for n in m_neighbors_left] 
                                                                     m_neighbors_right = [n for n in Right_new.neighbors(node) if Right_new.nodes[n].get('label') != 'H']  
@@ -1369,15 +1365,15 @@ for rn in reactions.keys():
                                                             if node_r != None:
                                                                 if [node_l,node_r] not in dict_node.values():
                                                                     Context_Text.append('  node [ id '+ str(node_no) + ' label "'+ atom_l +'" ]\n')
-                                                                    dict_node[node_no] = [node_l,node_r] #New No. = [old No. L, old No. R]
+                                                                    dict_node[node_no] = [node_l,node_r]
                                                                     node_no = node_no + 1       
                                                                     break        
   
-                                # check if all M-Atoms were found on both sides
+                                # Check if all M-atoms were found on both sides
                                 if len(seen_nodes) != m_nodes_no: 
                                     continue
                                                                          
-                                # write M-Hydrogens 
+                                # Write M-hydrogens 
                                 hydrogen_left = []
                                 hydrogen_right = []
                                 for node in Left_new.nodes():
@@ -1385,7 +1381,7 @@ for rn in reactions.keys():
                                     if 'map' in attrs:
                                         if attrs['label'] == 'H' and 'r' not in attrs['atomtype'] and 'd' not in attrs['atomtype']:
                                             hydrogen_left.append(node)
-                                            # find the corresponding atom map ID for the M-hydrogen
+                                            # Find the corresponding atom map ID for the M-hydrogen
                                             if not isinstance(attrs['atomtype'],list):
                                                 attrs['atomtype'] = [attrs['atomtype']]
                                             for r in range(len(attrs['atomtype'])):
@@ -1418,35 +1414,35 @@ for rn in reactions.keys():
                                             hydrogen_left.append(None)  
                                             hydrogen_right.append(node)                                       
 
-                                # if no hydrogens got lost than write then in the contect 
-                                # if Right Graph has more hydrogens then write this one in Right and as H+ in Left          
+                                # If no hydrogens got lost then write them in the 'Context'
+                                # If right graph has more hydrogens then write this into 'Right' and as H+ in 'Left'          
                                 for i in range(len(hydrogen_left)):
                                     if [hydrogen_left[i],hydrogen_right[i]] not in dict_node.values() and hydrogen_left[i] != None and hydrogen_right[i] != None:
                                         Context_Text.append('  node [ id '+ str(node_no) + ' label "H" ]\n')
-                                        dict_node[node_no] = [hydrogen_left[i],hydrogen_right[i]] #New No. = [old No. L, old No. R]
+                                        dict_node[node_no] = [hydrogen_left[i],hydrogen_right[i]] 
                                         node_no = node_no + 1    
                                     if [hydrogen_left[i],hydrogen_right[i]] not in dict_node.values() and hydrogen_left[i] == None and hydrogen_right[i] != None:
                                         Left_Text.append('  node [ id '+ str(node_no) + ' label "H+" ]\n')
                                         Right_Text.append('  node [ id '+ str(node_no) + ' label "H" ]\n')
-                                        dict_node[node_no] = [None,hydrogen_right[i]] #New No. = [old No. L, old No. R]
+                                        dict_node[node_no] = [None,hydrogen_right[i]] 
                                         node_no = node_no + 1                     
                                     if [hydrogen_left[i],hydrogen_right[i]] not in dict_node.values() and hydrogen_left[i] != None and hydrogen_right[i] == None:
                                         Right_Text.append('  node [ id '+ str(node_no) + ' label "H+" ]\n')
                                         Left_Text.append('  node [ id '+ str(node_no) + ' label "H" ]\n')
-                                        dict_node[node_no] = [hydrogen_left[i],None] #New No. = [old No. L, old No. R]
+                                        dict_node[node_no] = [hydrogen_left[i],None] 
                                         node_no = node_no + 1    
                                                                    
-                                # translate numeric edge labelling in symbolic labelling 
+                                # Translate numeric edge labelling into symbolic labelling
                                 L1 = update_bound_attribute(copy.deepcopy(Left_new))                                
                                 R1 = update_bound_attribute(copy.deepcopy(Right_new))                   
                                                                  
-                                # write Edges
+                                # Write edges
                                 trans_Ledges = {}
                                 trans_Redges = {}  
                                 ori_Ledges = list(L1.edges(data=True))
                                 ori_Redges = list(R1.edges(data=True))
 
-                                # translete Edges with new node numer system
+                                # Translate edges with new node number system
                                 for edge in L1.edges():
                                     node1 = None
                                     node2 = None
@@ -1469,16 +1465,14 @@ for rn in reactions.keys():
                                         if edge[1] == dict_node[i][1]:
                                             node2 = i
                                     if node1 == None or node2 == None:
-                                        R1.remove_edge(edge[0],edge[1])
-                                        
-                                    
+                                        R1.remove_edge(edge[0],edge[1])                                
                                     else:
                                         trans_Redges[(str(node1),str(node2))] = R1.edges[edge]['label']          
                                 
-                                # check for common edges
+                                # Check for common edges
                                 seen_edges = []
                                 for e1,e2 in trans_Ledges.keys():
-                                    # first node order e1,e2
+                                    # First node order e1,e2
                                     if (e1,e2) in trans_Redges.keys() and (e1,e2) not in seen_edges:
                                         seen_edges.append((e1,e2))
                                         if trans_Ledges[(e1,e2)] == trans_Redges[(e1,e2)]:
@@ -1486,7 +1480,7 @@ for rn in reactions.keys():
                                         else:
                                             Left_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Ledges[(e1,e2)] + '" ]\n')
                                             Right_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Redges[(e1,e2)]+ '" ]\n')
-                                    # second node order e2,e1
+                                    # Second node order e2,e1
                                     elif (e2,e1) in trans_Redges.keys() and (e2,e1) not in seen_edges:
                                         seen_edges.append((e2,e1))
                                         if trans_Ledges[(e1,e2)] == trans_Redges[(e2,e1)]:
@@ -1495,7 +1489,7 @@ for rn in reactions.keys():
                                             Left_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Ledges[(e1,e2)] + '" ]\n')
                                             Right_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Redges[(e2,e1)]+ '" ]\n')
                                
-                                # check for edges only of one side        
+                                # Check for edges only of one side       
                                 for e1,e2 in trans_Ledges.keys():             
                                     if (e1,e2) not in seen_edges and (e2,e1) not in seen_edges:
                                         Left_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Ledges[(e1,e2)] + '" ]\n')                 
@@ -1503,11 +1497,11 @@ for rn in reactions.keys():
                                     if (e1,e2) not in seen_edges and (e2,e1) not in seen_edges:
                                         Right_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Redges[(e1,e2)] + '" ]\n')         
                                               
-                                # check if are found changes on left or right side
+                                # Check if changes are found on left or right side
                                 if len(Left_Text) == 0 and len(Right_Text) == 0: 
                                     continue         
                                 
-                                # write gml file                       
+                                # Write gml file                       
                                 if not os.path.exists('./03_DPO_Rules/'+rn):
                                     os.makedirs('./03_DPO_Rules/'+rn) 
                                 with open('./03_DPO_Rules/'+rn+'/'+rn+'_'+str(no)+'.gml', 'w') as out: 

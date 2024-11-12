@@ -15,7 +15,7 @@ from mod import *
 
 config.rule.ignoreConstraintsDuringInversion = True
 
-# load compound mol format form KEGG Database
+# Load compound mol format form KEGG Database
 def get_compound_mol(compound_id):
     url = f'http://rest.kegg.jp/get/compound:{compound_id}/mol'
     try:
@@ -23,7 +23,6 @@ def get_compound_mol(compound_id):
         response.raise_for_status()  # This throws an exception if the status code is not 200 (OK)
         return response.text
     except requests.exceptions.RequestException as e:
-        #print(f"Fehler bei der Anfrage: {e}")
         return None
 
 def mol_to_smiles(molfile_content):
@@ -48,7 +47,7 @@ def mol_to_smiles(molfile_content):
     return smiles_without_charges
 
 
-# create the compound form KEGG mol data 
+# Create the compound from KEGG mol data 
 def mol_to_graph(mol_str):
     mol = Chem.MolFromMolBlock(mol_str)
     Chem.rdmolops.AssignStereochemistry(mol, force=True, cleanIt=True)
@@ -85,17 +84,16 @@ def count_protons(text):
 
 def getReactionSmiles(dg,correct_edge):
         origSmiles = {}
-        # change the class labels for every atom
+        # Change the class labels for every atom
         for v in dg.vertices:
                 s = v.graph.smilesWithIds
-                #s = s.replace(":", ":o")
                 s = regex.sub(":([0-9]+)\]",":o\\1]",s)
                 origSmiles[v.graph] = s
         res = {}
         
         maps = DGVertexMapper(correct_edge,leftLimit=1,rightLimit=1)
 
-        # replace the original local IDs with global IDs
+        # Replace the original local IDs with global IDs
         eductSmiles = [origSmiles[g] for g in maps.left]
         
         for v in maps.left.vertices:
@@ -105,7 +103,6 @@ def getReactionSmiles(dg,correct_edge):
 
         strs = set()
         for r in maps:
-            #print('No of Maps:',len(r.map))
             m = r.map
             productSmiles = [origSmiles[g] for g in maps.right]
             for ev in maps.left.vertices:
@@ -136,15 +133,10 @@ def getReactionSmiles(dg,correct_edge):
         return list(sorted(strs))
 
 def generate_combinations(input_list):
-    # Liste, um die Kombinationen zu speichern
     all_combinations = []
-    
-    # Erzeuge alle Kombinationen für jede mögliche Länge
     for r in range(1, len(input_list)):
         combinations_r = list(itertools.combinations(input_list, r))
-        # Wandel jede Kombination von Tupeln in eine Liste um
-        all_combinations.extend([list(comb) for comb in combinations_r])
-    
+        all_combinations.extend([list(comb) for comb in combinations_r])    
     return all_combinations
 
 def create_Educts_and_Products(reaction_data,path,rule,rule_var,universe):
@@ -152,9 +144,9 @@ def create_Educts_and_Products(reaction_data,path,rule,rule_var,universe):
     educ = [] # List of educts known by the database for finding correct hyperedge
     prod = [] # List of products known by the database for finding correct hyperedge
     h_mol = None # marker if proton molecules were at the Kegg reaction
-    subspace = [] # List of possibile substrates for creating Network
+    subspace = [] # List of possible substrates for creating network
     
-    # load all compounants of the reaction    
+    # Load all components of the reaction    
     educts = copy.deepcopy(reaction_data[rule][0])
     products = copy.deepcopy(reaction_data[rule][1])
     
@@ -195,7 +187,7 @@ def create_Educts_and_Products(reaction_data,path,rule,rule_var,universe):
             if iso_check == False and isinstance(universe[e], Graph) and universe[e].id: 
                 subspace.append(universe[e])                
    
-    # add protons to Educts and Products
+    # Add protons to Educts and Products
     with open(path+'/'+rule+'/'+rule_var,'r') as f:
         lines = f.readlines()
     string_rule = " ".join(lines)        
@@ -216,7 +208,7 @@ def create_Educts_and_Products(reaction_data,path,rule,rule_var,universe):
     return educ,prod,subspace
 
 def find_AAMs(dg,found,count_aam,count_aam_list,var_succ):
-    # search for HyperEdge which creates all the products -> global atom-to-atom maps
+    # Search for HyperEdge which creates all the products -> global atom-to-atom maps
     correct_edge = False       
     print('No. of Edges in Network',dg.numEdges)
     for hyperedge in dg.edges:
@@ -226,10 +218,9 @@ def find_AAMs(dg,found,count_aam,count_aam_list,var_succ):
             print('findEdge Faild')
 
     if correct_edge != False:
-        if not correct_edge.isNull():
-            print('HyperEdge found')        
+        if not correct_edge.isNull():      
             try:          
-                # parse graphs to SMILES Format  
+                # Parse graphs to SMILES Format  
                 res = getReactionSmiles(dg,correct_edge)        
             except:
                 with open(f"./output_WildcardCase.txt", mode="a") as outp:
@@ -245,7 +236,7 @@ def find_AAMs(dg,found,count_aam,count_aam_list,var_succ):
                     with open(f"./output_GlobalReactions.txt", mode="a") as outp:
                         outp.write(rule+' '+str(s)+"\n")              
     if found == False: 
-        # check for partial AAMs
+        # Check for partial AAMs
         for hyperedge in dg.edges:
             print('Search for Partial AAMs')    
             product_check = True
@@ -255,7 +246,7 @@ def find_AAMs(dg,found,count_aam,count_aam_list,var_succ):
             print('Result Check',product_check)       
             if product_check == True:
                 try:
-                    # parse graphs to SMILES Format   
+                    # Parse graphs to SMILES Format    
                     res = getReactionSmiles(dg,hyperedge)
                 except:
                     with open(f"./output_WildcardCase.txt", mode="a") as outp:
@@ -286,23 +277,19 @@ def createMoleculeDatabase(reaction_data,universe):
                     universe[m] = mol  
     return universe
 
-############################### START ###################################
-
 # load reaction data form KEGG database
-# reaction_data = {'reaction_name': [educts = {},products = {}]}
-with open('/homes/biertank/nora/Githubs/AAMRuleTool/RCLASS2DPORules_version2.0/03/Filter Reactions/Reaction_should_be_generated.txt','r') as in_f:
-#with open('/homes/biertank/nora/Githubs/AAMRuleTool/RCLASS2DPORules_version2.0/03/Filter Reactions/Test.txt','r') as in_f:
+with open('./Additional_Files/REACTION_RCLASS_DATA.txt','r') as in_f:
     lines = in_f.readlines()
 
 reaction_data = {}
 for line in lines:
-    # Extract Reaction Name
+    # Extract reaction name
     if line.startswith('Re'):
         line = line.split(':')
         line = line[1].split('\n')
         rn = line[0]
         continue
-    # Extract Compounds an Stöchiomatric Data    
+    # Extract compounds and stochiometric data       
     if line.startswith('C'):
         compound_ids_str = re.search(r"Compound IDs:\[(.*?)\]", line).group(1)
         compound_ids = eval(compound_ids_str)  
@@ -329,22 +316,18 @@ for line in lines:
                     products[item] = count
         reaction_data[rn] = [educts,products]
 
-########################## STATS ##############################################
+# Statistics
 count_aam = 0 # counts the number of generated aams
 count_miss = 0 # counts the number of reactions which could not be generated
 count_aam_list = [] 
 count_miss_list = [] 
-##############################################################################
 
-
-# load all Reaction rules witch AAMs should be generated
-#path = '/homes/biertank/nora/Githubs/AAMRuleTool/RCLASS2DPORules_version2.0/03/03_DPO_bigRun'
-path = '/homes/biertank/nora/Githubs/AAMRuleTool/RCLASS2DPORules_version2.0/03/03_DPO_Rules'
-#path = '/homes/biertank/nora/Githubs/AAMRuleTool/RCLASS2DPORules_version2.0/03/Test'
+# Load all Reaction rules witch AAMs should be generated
+path = sys.argv[2]
 rules_names = os.listdir(path)        
-universe = {} # list of all known Molecules by KEGG DB  
+universe = {} # List of all known Molecules by KEGG DB  
 
-# create a list of DPO-Rules which are already tried
+# Create a list of DPO-rules which were already tried
 done_list = []
 with open('output_rxns.txt','r') as f:
     lines = f.readlines()    
@@ -355,83 +338,52 @@ for i in lines:
 for rule in rules_names:  
     if rule in done_list:
         continue
-    # complete universe       
+    # Complete universe             
     universe = createMoleculeDatabase(reaction_data[rule],universe)
-    print('universe',universe)
     
     # write logbook
     with open(f"./output_rxns.txt", mode="a") as outp:
         outp.write(rule+'\n')        
     
-    found = False # marker if a aam could be generated    
-    rule_variations = os.listdir(path+'/'+rule) # find all rules for one reaction     
+    found = False # Marker if an Atom to Atom Map could be generated      
+    rule_variations = os.listdir(path+'/'+rule)     
     for rule_var in rule_variations:
         print('TRY ', rule_var)
-        var_succ = False # marker if a variation of a rule could generated a aam
+        var_succ = False # Marker if a variation of a rule could generated a aam
         
-        # add rule
+        # Add rule
         b = [ruleGML(path+'/'+rule+'/'+rule_var, add=False,printStereoWarnings=False)]
-
 
         # generated educts and products
         educ,prod,subspace = create_Educts_and_Products(reaction_data,path,rule,rule_var,universe)
-        print('Educts of the Reaction: ',educ)
-        print('Products of the Reaction: ',prod)  
-
-        ## print in file
-        #post.summarySection("Educt Graph")
-        #for a in educ:   
-        #    a.print()      
-        #post.summarySection("Product Graph")
-        #for a in prod:   
-        #    a.print()
+        subspace = educ + prod
         
         # Create Network        
         dg = DG(labelSettings=LabelSettings(LabelType.Term, LabelRelation.Specialisation),graphDatabase=educ)
         dg.build().apply(subspace, ruleGML(path+'/'+rule+'/'+rule_var, add=False,printStereoWarnings=False), onlyProper=False)
             
-        # print in file
-        #post.summarySection("Network")     
-        #dg.print()
-        
-        #post.summarySection("Database")     
-        #for g in dg.graphDatabase:
-        #    g.print()
-            
-        #post.summarySection("Rule")  
-        #for r in b:
-        #    r.print()                
-        
-        # find atom-to-atom maps in Network
+        # Find atom-to-atom maps in network
         found,count_aam,count_aam_list,var_succ = find_AAMs(dg,found,count_aam,count_aam_list,var_succ)
 
         if found == False:
-            print('### HyperEdge not found! Check reverse Modus ###') 
-            # try the opposite direction            
+            #  Try the opposite direction           
             a = [ruleGML(path+'/'+rule+'/'+rule_var,invert=True, add=False,printStereoWarnings=False)]
             
-            # generated educts and products
+            # Generate educts and products
             educ,prod,subspace = create_Educts_and_Products(reaction_data,path,rule,rule_var,universe)
-            print('Educts of the Reaction: ',educ)
-            print('Products of the Reaction: ',prod)  
-            print('Database for Network: ',subspace)          
-            
+
             # Create Network
             dg = DG(labelSettings=LabelSettings(LabelType.Term, LabelRelation.Specialisation),graphDatabase=educ)
             dg.build().apply(subspace, ruleGML(path+'/'+rule+'/'+rule_var,invert=True, add=False,printStereoWarnings=False), onlyProper=False)
-                                
-            #post.summarySection("Network Reverse")     
-            #dg.print()
             correct_edge = False         
             
-            # find atom-to-atom maps in Network
+            # Find atom-to-atom maps in Network
             found,count_aam,count_aam_list,var_succ = find_AAMs(dg,found,count_aam,count_aam_list,var_succ)
 
         if found == False:
             with open(f"./output_FalseRuleVariation.txt", mode="a") as outp:
                 outp.write(rule_var+'\n')     
-                #post.summarySection("Network False")     
-                #dg.print()
+
     if found == False:
         count_miss += 1
         count_miss_list.append(rule)

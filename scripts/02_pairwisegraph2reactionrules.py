@@ -35,7 +35,7 @@ def node_match_typ(a, b):
 def edge_match(a, b):
     return a['label'] == b['label']
 
-# check for perutaion of matching nodes (most because of hydrogens)       
+# Check for permutation of matching nodes (mostly because of hydrogens)     
 def delete_sub_mappings(mapping):                
     unique_mappings = []
     seen_keys = set()
@@ -47,10 +47,10 @@ def delete_sub_mappings(mapping):
         unique_mappings.append(d)                                                                
     return unique_mappings  
 
-# finds all molecular subgraphs which were earlier created an load them in left an right lists
+# Finds all molecular subgraphs which were created earlier and load them into left and right lists
 def load_graphs_from_folders(root_path, keyword,comp_pair):
     
-    # translate the MOD bond names to the mol bond names 
+    # Translate the MOD bond names to the mol bond names 
     def update_bound_attribute(G):
         for u, v, data in G.edges(data=True):
             bound_value = data['bound']
@@ -74,22 +74,22 @@ def load_graphs_from_folders(root_path, keyword,comp_pair):
     for dirpath, _, filenames in os.walk(root_path):
         for filename in filenames:
             if keyword in filename:
-                # load subgraph    
+                # Load subgraph    
                 filepath = os.path.join(dirpath, filename)
                 sub_no = re.search(r'_(\d+)\.gml', filename)
                 list_name = sub_no.group(1)
                 G = nx.read_gml(filepath)              
                 
-                # for counting no of subgraphs per side 
+                # for counting number of subgraphs per side 
                 if 'left' in filename:
                     if int(sub_no.group(1)) > sub_count:
                         sub_count = int(sub_no.group(1))
                                        
-                # rename all nodes so that every id is unique
+                # Rename all nodes so that every ID is unique
                 rename = {node : list_name +'_'+str(node) for node in G.nodes()} 
                 nx.relabel_nodes(G, rename, copy=False)
                 if True:
-                    #  modify the edges and nodes so that it fits to the mol data
+                    # Modify the edges and nodes so that it fits to the mol data
                     update_bound_attribute(G)
 
                     for node in G.nodes():
@@ -99,7 +99,7 @@ def load_graphs_from_folders(root_path, keyword,comp_pair):
                             else:
                                 G.nodes[node]['label'] = G.nodes[node]['atom']
                                        
-                    # check compound 1                
+                    # Check compound 1                  
                     mapping = subgraph_isomorphism_with_attributes(comp_pair[0],G,node_match2,edge_match)
                     if len(mapping) != 0:
                         mapping = delete_sub_mappings(mapping)
@@ -111,7 +111,7 @@ def load_graphs_from_folders(root_path, keyword,comp_pair):
                             if list_name not in rclass_right_comp1:
                                 rclass_right_comp1[list_name] = []
                             rclass_right_comp1[list_name].append((G,mapping))    
-                    # check comound 2 
+                    # Check compound 2  
                     mapping = subgraph_isomorphism_with_attributes(comp_pair[1],G,node_match2,edge_match)        
                     if len(mapping) != 0:
                         mapping = delete_sub_mappings(mapping)
@@ -124,7 +124,7 @@ def load_graphs_from_folders(root_path, keyword,comp_pair):
                                 rclass_right_comp2[list_name] = []
                             rclass_right_comp2[list_name].append((G,mapping))  
 
-    # check if all subgraphs where found in the compound
+    # Check if all subgraphs where found in the compound
     if len(rclass_left_comp1) != sub_count:
         rclass_left_comp1 = {}
     if len(rclass_left_comp2) != sub_count:
@@ -136,7 +136,7 @@ def load_graphs_from_folders(root_path, keyword,comp_pair):
 
     return rclass_left_comp1, rclass_right_comp1, rclass_left_comp2, rclass_right_comp2
 
-# load compound mol format form KEGG Database
+# Load compound mol format form KEGG database
 def get_compound_mol(compound_id):
     url = f'http://rest.kegg.jp/get/compound:{compound_id}/mol'
     try:
@@ -147,7 +147,7 @@ def get_compound_mol(compound_id):
         print(f"Fehler bei der Anfrage: {e}")
         return None
 
-# create the compound form KEGG mol data 
+# Create the compound from KEGG mol data
 def mol_to_graph(mol_str):
     mol = Chem.MolFromMolBlock(mol_str)
     Chem.rdmolops.AssignStereochemistry(mol, force=True, cleanIt=True)
@@ -166,10 +166,10 @@ def mol_to_graph(mol_str):
         G.add_edge(u, v, label=bond_type)
     return G
 
-# find all matches of the RDM Patterns in the Molecule  
+# Find all matches of the RDM Patterns in the Molecule    
 def subgraph_isomorphism_with_attributes(G, s,node_match,edge_match):  
 
-    # check if Subgraphs has polaritis if yes then remove then, otherwise isomorphism test will not work because mol format hasnt it                      
+    # Check if Subgraphs has polarities if yes then remove them, otherwise isomorphism test will not work because mol format does not have this kind of infomration                    
     GM = iso.GraphMatcher(G, s,node_match=node_match,edge_match=edge_match)
     subgraph_matches = list(GM.subgraph_monomorphisms_iter())       
     
@@ -179,18 +179,18 @@ def subgraph_isomorphism_with_attributes(G, s,node_match,edge_match):
 def connect_patterns(comp,pattern):
     conected_graphs = [] # List of already generated patterns, avoid duplications
     if len(pattern) != 1:
-        # try all combinaions of subgraph mappings
+        # Try all combinations of subgraph mappings
         mapping_combis = list(product(pattern[0][1],pattern[1][1]))
         mapping_combis = list(product(*[pattern[i][1] for i in range(len(pattern))]))
 
         for combi in mapping_combis:       
-            # time check for to comlex RCLASSES
+            # Time check for to comlex RCLASSES
             current_time = time.time()
             elapsed_time = current_time - start_time
             time_limit = 3600
             if elapsed_time >= time_limit:
                 return conected_graphs       
-            # find all node in the compound which should be in the rule
+            # Find all nodes in the compound which should be in the rule
             nodes_inRule =  {}
             rdm_pattern = comp.copy()
             for maps in combi:
@@ -200,7 +200,7 @@ def connect_patterns(comp,pattern):
                 for key in maps.keys():
                     nodes_inRule[key].append(maps[key])
 
-            # cut RDM Pattern out of molecule and transfer node attribut from subgraphs to node
+            # Cut RDM Pattern out of molecule and transfer node attribute from subgraphs to node
             for node in comp.nodes():
                 if node in nodes_inRule.keys():
                     for sub_node in nodes_inRule[node]: 
@@ -224,14 +224,14 @@ def connect_patterns(comp,pattern):
                 else:
                     rdm_pattern.remove_node(node)
       
-            # if there are R-Atoms with highter degrees then 1, rewrite the atom label with the atom of the compound         
+            # If there are R-Atoms with higher degrees then 1, rewrite the atom label with the atom of the compound      
             for node,data in rdm_pattern.nodes(data=True):        
                 if data['label'] == 'R':
                     if rdm_pattern.degree(node) > 1:
                         label_att = comp.nodes[node]['label']
                         rdm_pattern.nodes[node]['label'] = label_att
                                                    
-            # check if identical graphs was already generated
+            # Check if identical graphs were already generated
             iso_check = True         
             for i in conected_graphs:
                 if nx.is_isomorphic(i,rdm_pattern,node_match=node_match1,edge_match=edge_match): 
@@ -241,7 +241,7 @@ def connect_patterns(comp,pattern):
                 conected_graphs.append(rdm_pattern)
                      
     else:
-            # cut RDM Pattern out of molecule and transfer node attribut from subgraphs to node
+            # Cut RDM Pattern out of molecule and transfer node attribute from subgraphs to node
             rdm_pattern = comp.copy()
             for node in comp.nodes():
                 if node in pattern[0][1][0].keys():  
@@ -259,7 +259,7 @@ def connect_patterns(comp,pattern):
           
     return conected_graphs            
    
-# check if both side are represented in the compound pair
+# Check if both sides are represented in the compound pair
 def matchingMolecule(comp_pair,variation):
 
     filtered_list_var1 = {}
@@ -273,12 +273,12 @@ def matchingMolecule(comp_pair,variation):
     right_mol1 = []
     right_mol2 = []       
   
-    # try it for both compounds 
+    # Try for both compounds 
     for com in range(len(comp_pair)):              
             
-        # try left and right reaction side
+        # Try left and right reaction side
         for side in variation.keys():
-            # try it for all created patterns            
+            # Try it for all created patterns             
             for g in range(len(variation[side])):     
                 
                 s = variation[side][g].copy()          
@@ -317,7 +317,8 @@ def matchingMolecule(comp_pair,variation):
     for l2 in left_mol2:
         if variation['left'][l2] not in filtered_list_var2['right']:
             filtered_list_var2['right'].append(variation['left'][l2])          
-    # Check for R-M-D-Atom consistency
+    
+    # Check for R-M-D-atom consistency
     if len(filtered_list_var1['left']) != 0 and len(filtered_list_var2['left']) == 0: 
     
         variation = consistency_check(filtered_list_var1,comp_pair,True)       
@@ -327,7 +328,7 @@ def matchingMolecule(comp_pair,variation):
         filtered_list_var1 = consistency_check(filtered_list_var1,comp_pair,True) 
         filtered_list_var2 = consistency_check(filtered_list_var2,comp_pair,True)  
 
-        # merge both variations together
+        # Merge both variations together
         variation= filtered_list_var1  
         for l2 in filtered_list_var2['left']:
             variation['left'].append(l2)
@@ -335,7 +336,7 @@ def matchingMolecule(comp_pair,variation):
             variation['right'].append(r2)            
     return variation
     
-# checks if a rule variation is only a sub graph of a other rule variation     
+# Checks if a rule variation is only a sub graph of a other rule variation       
 def subgraph_check(rule):
     for side in rule.keys():
         filtered_list = []
@@ -350,7 +351,7 @@ def subgraph_check(rule):
             if check == True:                     
                 filtered_list.append(rule[side][i])
             
-            # if the new Graph has more information (means less R-Atoms) than use that
+            # If the new graph has more information (means less R-Atoms) then use it
             if check == False: 
                 R_new = sum(1 for node, data in rule[side][i].nodes(data=True) if data.get('label') == 'R')
                 R_old = sum(1 for node, data in filtered_list[j].nodes(data=True) if data.get('label') == 'R') 
@@ -365,7 +366,7 @@ def consistency_check(rule,comp,new_mapping):
     filtered_list['left'] = []
     filtered_list['right'] = []       
 
-    # create a list of the atoms with there bonding from the neighborhood
+    # Create a list of the atoms with their bonding from the neighborhood
     def get_edge_attributes_for_node(G, node):
         edge_attributes = []
         for edge in G.edges(node, data=True):
@@ -376,7 +377,7 @@ def consistency_check(rule,comp,new_mapping):
                 edge_attributes.append([G.nodes[u]['label'],attr['label']])   
         return edge_attributes
 
-    # check for same neighbor nodes
+    # Check for same neighbor nodes
     def neighborhood_check(neighborhood1,neighborhood2):
         combined_hist = {}
 
@@ -444,7 +445,7 @@ def consistency_check(rule,comp,new_mapping):
         if neighborhood_check_left == True:
             filtered_list['left'].append(var)
             
-    for var in rule['right']:                    #        
+    for var in rule['right']:                          
         neighborhood_check_right = False
         for r_node in var.nodes():
 
@@ -472,25 +473,23 @@ def consistency_check(rule,comp,new_mapping):
      
     return filtered_list
 
-# checks if the diffrent mapping only comes from diffrent order of keys
+# Checks if the different mapping only comes from different order of keys
 def check_mappings(rclass):
-    # try for every subgraph
+    # Try for every subgraph
     for subgraph in rclass.keys():  
-
-        # try for every variation of a subgraph
+        # Try for every variation of a subgraph
         for var in range(len(rclass[subgraph])-1):
             filtered_maps = []
             filtered_maps.append(rclass[subgraph][var][1][0])
-            # check all mappings
+            # Check all mappings
             for m in range(len(rclass[subgraph][var][1])-1):    
                 if sorted(rclass[subgraph][var][1][m].keys()) != sorted(rclass[subgraph][var][1][m+1].keys()): 
-                    filtered_maps.append(rclass[subgraph][var][1][m+1])   
-                        
+                    filtered_maps.append(rclass[subgraph][var][1][m+1])                          
             rclass[subgraph][var] = (rclass[subgraph][var][0],filtered_maps)                
  
     return rclass
     
-# checks if of both sides are the same amount of atoms    
+# Checks if on both sides are the same amount of atoms  
 def check_atom_number(variation):
  
     def count_nodes_with_condition(graph):
@@ -549,12 +548,12 @@ def check_atom_number(variation):
     
     return variation
     
-# counter for stats
+# Counter for statistics
 counter_work = 0
 counter_notwork = 0   
 counter_input = 0
 
-# read the linked names of componands for each RCLASS
+# Read the linked names of components for each RCLASS
 with open('./Additional_ Files/RCLASS_RPAIR.txt', 'r') as f:
     lines = f.readlines()
 comp_list = {}    
@@ -570,7 +569,7 @@ for line in lines:
         else:
             comp_list[rxn] = rpair_list
 
-# read list with undefined Atom RCLASSES
+# Read list with undefined atom RCLASSES
 with open('./Additional_ Files/List_UndefindAoms.txt', 'r') as f:
     lines = f.readlines()
 undefind_list = [s.strip() for s in lines]
@@ -578,16 +577,15 @@ undefind_list = [s.strip() for s in lines]
 root_path = sys.argv[2]
 output_path = './02_Reaction Rules/'
 
-# try all RCLASSES from the comound_pairs
+# Try all RCLASSES from the compound_pairs
 for rxn in comp_list:
-        # time counter which continue the process if the RCLASS take to much time
+        # Time counter which continues the process if the RCLASS takes too much time
         start_time = time.time()
-        # pass the RCLASSES which as a undefind Atom in the reaction
+        # Pass the RCLASSES which as a undefined atom in the reaction
         if rxn not in undefind_list: 
             counter_input = counter_input + 1
-
-            # translate all mol compound data from KEGG in graphs
-            comp_graphs = [] # Compound Graphs as Tuples 
+            # Translate all mol compound data from KEGG in graphs
+            comp_graphs = [] #  Compound Graphs as Tuples 
             compound_ids = comp_list[rxn]
             for mol in compound_ids:
                 m1 = get_compound_mol(mol[0])
@@ -596,10 +594,10 @@ for rxn in comp_list:
                 g2 = mol_to_graph(m2)
                 comp_graphs.append([g1,g2])
 
-            # load the molecular subgraphs 
+            # Load the molecular subgraphs 
             rclass_left_comp1, rclass_right_comp1, rclass_left_comp2, rclass_right_comp2 = load_graphs_from_folders(root_path, rxn, comp_graphs[0])
 
-            # if one side could only be found on one compound the other side matches have to be false positiv -> dont check further 
+            # If one side could only be found on one compound the other side matches have to be false positive. In this case do not check further 
             if len(rclass_left_comp1) != 0 and len(rclass_left_comp2) == 0:
                  rclass_right_comp1 = []    
                  rclass_left_comp1 = check_mappings(rclass_left_comp1 )
@@ -623,7 +621,7 @@ for rxn in comp_list:
                     file.write(rxn + ' Compound checks faild! \n')
                 continue   
 
-            # combine all possibile combinations of Subgraphs
+            # Combine all possible combinations of subgraphs
             if len(rclass_left_comp1) != 0:
                 subcombis_left_comp1 = list(product(*rclass_left_comp1.values()))
             else:
@@ -641,10 +639,10 @@ for rxn in comp_list:
             else:
                 subcombis_right_comp2 = []
             
-            # check if the amount of one combi part is to big to handle
+            # Check if the amount of one combi part is too big to handle
             continue_check = [len(subcombis_left_comp1),len(subcombis_left_comp2),len(subcombis_right_comp1),len(subcombis_right_comp2)]
            
-            # try to puzzle the subgraphs to one RCLASS
+            # Try to puzzle the subgraphs to one RCLASSS
             rdm_pattern_left_comp1 =  []
             rdm_pattern_right_comp1 =  []
             rdm_pattern_left_comp2 =  []
@@ -672,7 +670,7 @@ for rxn in comp_list:
                     for i in pattern_list:
                         rdm_pattern_right_comp2.append(i)
 
-            # merge the partner RDM Pattern together
+            # Merge the partner RDM Pattern together
             variation1 = {}
             variation1['left'] = rdm_pattern_left_comp1
             variation1['right'] = rdm_pattern_right_comp2
@@ -699,7 +697,7 @@ for rxn in comp_list:
                         data['label'] = data['label'].replace('+', '').replace('-', '')  
             
 
-            # do a consisteny check on the fist compound
+            # Do a consistency check on the first compound
             variation1 = consistency_check(variation1,comp_graphs[0],False)
             variation2 = consistency_check(variation2,comp_graphs[0],False) 
                         
@@ -722,46 +720,45 @@ for rxn in comp_list:
             variation1 = check_atom_number(variation1)
             variation2 = check_atom_number(variation2)
             
-            # Case 1: variation1 is complete empty and variation2 works > have to be variation2
+            # # Case 1: Variation1 is completely empty and variation 2 works -> conclusion: have to be variation 2
             if len(variation1['left']) == 0 or len(variation1['right']) == 0:
                 if len(variation2['left']) != 0 and len(variation2['right']) != 0:
                     rule = variation2
-                    # sub graph check: sometimes the differences are only on hydrogen node less, delete this one
+                    # Sub graph check: sometimes the differences are only one hydrogen node less, then delete this one
                     rule = subgraph_check(rule)
                 else:
-                    # Error: non of the variation are suitable 
+                    # Error: None of the variations are suitable
                     counter_notwork = counter_notwork + 1
                     rule = None
                     with open('List_ErrorRCLASS', 'a') as file:
                         file.write(rxn + ' Compound checks faild! \n')
                     continue    
-            # Case 2: Variation 1 works and variation2 is empty -> have to be variation1
+            # Case 2: Variation 1 works and variation 2 is empty. Then it has to be variation 1
             elif len(variation2['left']) == 0 or len(variation2['right']) == 0:   
                     rule = variation1                 
-                     # sub graph check: sometimes the differences are only on hydrogen node less, delete this one
+                    # Sub graph check: Sometimes the differences are only one hydrogen node less, then delete this one
                     rule = subgraph_check(rule)
 
-            # Case 3: in both variations are still working         
+            # Case 3: In both variations ware orking         
             elif len(variation2['left']) != 0 and len(variation2['right']) != 0:  
                 if len(variation1['left']) != 0 and len(variation1['right']) != 0:
                     rule = 'both' 
             else:
-
-                # Case 4: all Variations are empty! non of the variation are suitable 
+                # Case 4: All variations are empty! None of the variations are suitable 
                 counter_notwork = counter_notwork + 1
                 rule = None
                 with open('List_ErrorRCLASS', 'a') as file:
                     file.write(rxn + ' Compound checks faild!\n')        
                 continue 
                 
-            # Networkx overwrites the label attribute with the atom information, so this must be stored again in a separate attribute  
+            # Networkx overwrites the label attribute with the atom information, so this must be stored again in a separate attribute   
             def create_atomAttribute(g):     
                 for node, data in g.nodes(data=True):
                     if 'label' in data:
                         data['atom'] = data['label'] 
                 return g
 
-            # save rules
+            # Save rules
             new_path = output_path + rxn
             if not os.path.exists(new_path):
                 os.makedirs(new_path)

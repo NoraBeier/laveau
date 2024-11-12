@@ -5,19 +5,19 @@
 <img src="./Logo.png" width="300"/>
 </p>
 
-## Translation of RCLASS Atom-to-Atom Information out of the KEGG database into DPO rules for the generation of Atom-to-Atom Maps
+## Translation of RCLASS Atom-to-Atom information out of the KEGG database into DPO rules for the generation of Atom-to-Atom Maps
 
 ## Description
 
-This repository is basically used on the one hand to provide the laveau tool and on the other hand as a database for the atom-to-atom maps and DPO rules generated from the KEGG database.
+This repository is used to provide the laveau tool and as a database for the Atom-to-Atom maps and DPO rules generated from the KEGG database.
 
 1. laveau tool
 
-We developed laveau (can be found in the folder 'scripts'), a tool that computes explicit DPO rules from KEGG reactions and RCLASS data. The algorithm proceeds stepwisely, starting from a translation of individual RDM codes into equivalent pattern graphs. Multiple RDM pattern graphs for the same RCLASS are then combined based on their embeddings into the educt and product molecules, observing certain consistency conditions. In the ﬁnal step, these combined pairwise patterns are merged into a pair of subgraphs of educts and products, respectively, which results in DPO graph rewrite rules. This rule are than used to generate Atom-to-Atom Maps for the reaction.Therefore, the gives you a output with two list of atom-to-atom map SMILES which are divided into global (the complete reaction with all molecules) and partial (part of the molecules of the reaction).
+We developed laveau (can be found in the folder 'scripts'), a tool that computes explicit DPO rules from KEGG reactions and RCLASS data. The algorithm proceeds stepwise, starting from a translation of individual RDM codes into equivalent pattern graphs. Multiple RDM pattern graphs for the same RCLASS are then combined based on their embeddings into the educt and product molecules, observing certain consistency conditions. In the ﬁnal step, these combined pairwise patterns are merged into a pair of subgraphs of educts and products, respectively, which results in DPO graph rewrite rules. These rules are then used to generate Atom-to-Atom Maps for the reaction. Therefore, the Tool gives you an output with two lists of Atom-to-Atom map SMILES which are divided into a global (the complete reaction with all molecules) and partial (part of the molecules of the reaction) Atom-to-Atom Maps.
 
 2. database
 
-In the folder 'database' you can find all partial and global atom-to-atom maps as well as DPO rules, which could be translated by laveau from the RCLASS RDM codes.
+In the folder 'database' you can find all partial and global Atom-to-Atom Maps as well as DPO rules, which could be translated by laveau from the RCLASS RDM codes.
 
 ## Usage
 
@@ -53,7 +53,6 @@ To process this list, the following call has to be run:
 ```console
 python 01_graph2pairwisegraph.py <PATH:00_RCLASS_Graphs>
 ```
-
 As output a folder '01_RDM_Graphs' will be created which stores the RDM pattern graphs for each reaction side in named folders as .xgef format. The suffix number in the folder name indicates the variant resulting from the different possible type graphs of Step 0. The suffix number to the individual files, on the other hand, indicates the variants resulting from the merging of the RDM graphs. In addition, the individual files have the addition 'left or 'right' for the respective reaction side.
 
 
@@ -67,7 +66,7 @@ To process this list, the following call has to be run:
 python 02_pairwisegraph2reactionrules.py <PATH:01_RDM_Graphs>
 ```
 
-As output, a folder '02_Reaction Rules' is generated with all Reaction Rules graphs in the respective separate folders. The suffix number to the individual files, indicates the variants resulting from earlier steps. In addition, the individual files have the addition 'left or 'right' for the respective reaction side.
+As output, a folder '02_Reaction Rules' is generated with all reaction rule graphs in the respective separate folders. The suffix number to the individual files indicates the variants resulting from earlier steps. In addition, the individual files have the addition 'left or 'right' for the respective reaction side.
 
 The files List_BigRCLASSES.txt and List_ErrorRCLASS.txt are also created. List_BigRCLASSES.tx lists all cases where the complexity of creating the rule was too great to execute it. List_ErrorRCLASS.txt, on the other hand, lists all RDM pattern graphs that could not be merged into a reaction rule.
 
@@ -102,6 +101,3 @@ The following files are created as output:
 * output_PartialReactions.txt: Lists all discovered partial atom-to-atom maps in SMILES format
 * output_GlobalReactions.txt: Lists all discovered global atom-to-atom maps in SMILES format
 * output_FalseReactions.txt: Lists all cases where no atom-to-atom mpas could be found
-
-
-
