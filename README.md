@@ -75,7 +75,7 @@ The files List_BigRCLASSES.txt and List_ErrorRCLASS.txt are also created. List_B
 To process this list, the following call has to be run:
 
 ```console
-python 03_reationrules2DPO.py <PATH:02_Reaction Rules>
+python 03_reationrules2DPO.py <PATH:03_Reaction Rules>
 ```
 A folder '03_DPO_Rule' with all DPO rules is created as output.
 The suffix number to the individual files, indicates the variants.
