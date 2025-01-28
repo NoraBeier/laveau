@@ -5,7 +5,7 @@
 <img src="./Logo.png" width="300"/>
 </p>
 
-## Translation of RCLASS Atom-to-Atom information out of the KEGG database into DPO rules for the generation of Atom-to-Atom Maps
+## Translation of RCLASS Atom-to-Atom Information out of the KEGG Database into DPO Rules for the Generation of Atom-to-Atom Maps
 
 ## Description
 
