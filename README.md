@@ -93,7 +93,7 @@ The MØD package is required for this step. Information on installation can be f
 After activating the conda environment with the MØD package, step 4 can be called with the following command:
 
 ```console
-mod -f 04_DPO2AAMs.py <PATH:03_Reaction_Rules>
+mod -f 04_DPO2AAMs.py <PATH:03_Reaction_Rules> <PATH:Output>
 ```
 
 The following files are created as output:

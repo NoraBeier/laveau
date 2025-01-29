@@ -143,36 +143,34 @@ def create_Educts_and_Products(reaction_data,path,rule,rule_var,universe):
 
     educ = [] # List of educts known by the database for finding correct hyperedge
     prod = [] # List of products known by the database for finding correct hyperedge
-    h_mol = None # marker if proton molecules were at the Kegg reaction
-    subspace = [] # List of possible substrates for creating network
-    
-    # Load all components of the reaction    
+    subspace = []
+    # load all compounants of the reaction    
     educts = copy.deepcopy(reaction_data[rule][0])
     products = copy.deepcopy(reaction_data[rule][1])
     
     # Define all educts 
     for e in educts.keys():
         if e == 'C00080':
-            h_mol = universe[e]
-        while educts[e] > 0:            
+            continue
+        while educts[e] > 0:       
             if e == False:
-                break
-            elif isinstance(universe[e], Graph) and universe[e].id:
+                break    
+            elif isinstance(universe[e], Graph): #and universe[e].id:
                 educ.append(universe[e])
                 educts[e] = educts[e]-1        
             else:
                 break
-        if e != False and isinstance(universe[e], Graph) and universe[e].id: 
+        if e != False and isinstance(universe[e], Graph): #and universe[e].id: 
             subspace.append(universe[e])
-    
+
     # Define all products
     for e in products.keys():
         if e == 'C00080':
-            h_mol = universe[e]
+            continue
         while products[e] > 0:
             if e == False:
                 break
-            elif isinstance(universe[e], Graph) and universe[e].id:
+            elif isinstance(universe[e], Graph): # and universe[e].id:
                 prod.append(universe[e])
                 products[e] = products[e]-1    
             else:
@@ -181,101 +179,154 @@ def create_Educts_and_Products(reaction_data,path,rule,rule_var,universe):
             iso_check = False
             for g1 in subspace:
                 if isinstance(g1, Graph) and g1.id:
-                    if isinstance(universe[e], Graph) and universe[e].id:
+                    if isinstance(universe[e], Graph): #and universe[e].id:
                         if g1.isomorphism(universe[e]) == True:
                             iso_check = True
-            if iso_check == False and isinstance(universe[e], Graph) and universe[e].id: 
-                subspace.append(universe[e])                
+            if iso_check == False and isinstance(universe[e], Graph): #and universe[e].id: 
+                subspace.append(universe[e])            
    
-    # Add protons to Educts and Products
+    # add protons to Educts and Products
     with open(path+'/'+rule+'/'+rule_var,'r') as f:
         lines = f.readlines()
     string_rule = " ".join(lines)        
     left_protons,right_protons = count_protons(string_rule)
     if left_protons != 0 or right_protons != 0:
-        if h_mol is not None:
-            left_protons = left_protons-1
-        else:
-            h_mol = smiles('[H+]', name='C00080')  
-            subspace.append(h_mol)             
+        h_mol = smiles('[H+]', name='C00080')  
+        subspace.append(h_mol)             
         while left_protons > 0:
             educ.append(h_mol)
-            left_protons = left_protons-1  
+            left_protons = left_protons-1
         while right_protons > 0:
             prod.append(h_mol)
             right_protons = right_protons-1    
-  
     return educ,prod,subspace
 
-def find_AAMs(dg,found,count_aam,count_aam_list,var_succ):
-    # Search for HyperEdge which creates all the products -> global atom-to-atom maps
-    correct_edge = False       
-    print('No. of Edges in Network',dg.numEdges)
-    for hyperedge in dg.edges:
-        try:
-            correct_edge = dg.findEdge(educ,prod)     
-        except:
-            print('findEdge Faild')
-
-    if correct_edge != False:
-        if not correct_edge.isNull():      
+def find_AAMs(dg, educ, prod, path,found,count_aam,count_aam_list):
+        
+    # search for HyperEdge which creates all the products -> global atom-to-atom maps
+    global_edge = False       
+    try:
+        global_edge = dg.findEdge(educ,prod)     
+    except:
+        print('findEdge Faild')
+    if global_edge: 
             try:          
-                # Parse graphs to SMILES Format  
-                res = getReactionSmiles(dg,correct_edge)        
+                # parse graphs to SMILES Format  
+                res = getReactionSmiles(dg,global_edge)      
             except:
-                with open(f"./output_WildcardCase.txt", mode="a") as outp:
-                    outp.write(rule+"\n")  
-            print(res)
-            if len(res) > 0:
-                if found == False:
-                    found = True
-                    count_aam += 1
-                    count_aam_list.append(rule)
-                var_succ = True
+                with open(path+"/output_WildcardCase.txt", mode="a") as outp:
+                    outp.write(rule+"\n") 
+                with open(path+"/Variations_Wildcard.txt",mode='a') as out:
+                    out.write(rule_var+'\n')
+                count_aam += 1
+                count_aam_list.append(rule)     
+                return True, count_aam,count_aam_list,True  
+            else:         
                 for s in res:
-                    with open(f"./output_GlobalReactions.txt", mode="a") as outp:
-                        outp.write(rule+' '+str(s)+"\n")              
-    if found == False: 
-        # Check for partial AAMs
-        for hyperedge in dg.edges:
-            print('Search for Partial AAMs')    
-            product_check = True
-            for t in dg.products:
-                if t not in prod:
-                    product_check = False
-            print('Result Check',product_check)       
-            if product_check == True:
-                try:
-                    # Parse graphs to SMILES Format    
-                    res = getReactionSmiles(dg,hyperedge)
-                except:
-                    with open(f"./output_WildcardCase.txt", mode="a") as outp:
-                        outp.write(rule+"\n")  
-                print(res)
-                if len(res) > 0:
-                    if found == False:
-                        found = True
+                    if found == False:    
                         count_aam += 1
                         count_aam_list.append(rule)
-                    var_succ = True
+                    with open(path + "/output_GlobalReactions.txt", mode="a") as outp:
+                        outp.write(rule+' '+str(s)+"\n")          
+                    with open(path+"/Variations_Global.txt",mode='a') as out:
+                        out.write(rule_var+'\n')
+                return True,count_aam,count_aam_list,True
+    else:  
+        ## Filter cofaktors out       
+        # NADP,NADPH,ATP,AMP,Diphosphate,ADP,NAD+,NADH,FAD,FADH2,5,10-Methylenetetrahydrofolate,Tetrahydrofolate,Methylcobalamin,Vitamin B12,L-Galactono-1,4-lactone,Vitamin C,CoA,Acetyl-CoA
+        cofactors = ['C00006','C00005','C00002','C00020','C00013','C00008','C00003','C00004','C00016','C01352','C00143','C00101','C06453','C05776','C01115','C00072','C00010','C00024']
+        # Remove Cofactors from the molecule lists
+        educ_f = educ
+        for v in educ:
+            if v.name in cofactors:
+                educ_f = [x for x in educ_f if x.name != v.name] 
+            if v in prod and v.name != 'C00080':
+                prod_f.remove(v)
+                educ_f.remove(v)
+        prod_f = prod
+        for v in prod:
+            if v.name in cofactors:
+                prod_f = [x for x in prod_f if x.name != v.name] 
+        try:
+            global_edge = dg.findEdge(educ_f,prod_f)            
+        except:
+            print('findEdge Faild')
+        if global_edge: 
+                try:          
+                    res = getReactionSmiles(dg,global_edge)     
+                except:
+                    with open(path+"/output_WildcardCase.txt", mode="a") as outp:
+                        outp.write(rule+"\n") 
+                    with open(path+"/Variations_Wildcard.txt",mode='a') as out:
+                        out.write(rule_var+'\n')
+                    count_aam += 1
+                    count_aam_list.append(rule)     
+                    return True, count_aam,count_aam_list,True  
+                else:         
+                    assert len(res) != 0  
                     for s in res:
-                        print('found')
-                        with open(f"./output_PartialReactions.txt", mode="a") as outp:
-                            outp.write(rule+' '+str(s)+"\n")        
-    return found,count_aam,count_aam_list,var_succ
+                        if found == False:    
+                            count_aam += 1
+                            count_aam_list.append(rule)
+                        with open(path + "/output_GlobalReactions.txt", mode="a") as outp:
+                            outp.write(rule+' '+str(s)+"\n")          
+                        with open(path+"/Variations_Global.txt",mode='a') as out:
+                            out.write(rule_var+'\n')
+                    return True,count_aam,count_aam_list,True  
+                               
+    # check for partial AAMs: educts and products must be a subset of the given molecules
+    num_partial = 0
+    for hyperedge in dg.edges:            
+        if any(v.graph not in educ for v in hyperedge.sources):
+            continue
+        if any(v.graph not in prod for v in hyperedge.targets):
+            continue
+        try:
+            # parse graphs to SMILES Format   
+            res = getReactionSmiles(dg,hyperedge)
+        except:
+            # Wildcard Case
+            with open(path+"/output_WildcardCase.txt", mode="a") as outp:
+                outp.write(rule+"\n")  
+            with open(path+"/Variations_Wildcard.txt",mode='a') as out:
+                out.write(rule_var+'\n')     
+        else:
+            num_partial += 1
+            for s in res:
+                with open(path+"/output_PartialReactions.txt", mode="a") as outp:
+                    outp.write(rule+' '+str(s)+"\n")
+                with open(path+"/Variations_Patial.txt",mode='a') as out:
+                    out.write(rule_var+'\n')        
+    if num_partial != 0 and found == False:
+        count_aam += 1
+        count_aam_list.append(rule)
+        return True,count_aam,count_aam_list,True 
+    elif num_partial != 0 or found == True:
+        return True,count_aam,count_aam_list,True 
+    else:
+        return False,count_aam,count_aam_list,False 
 
 def createMoleculeDatabase(reaction_data,universe):   
     for molecule in reaction_data:
         for m in molecule.keys():
-            mol_kegg = get_compound_mol(m)
-            s = mol_to_smiles(mol_kegg)
-            if s == False:
+            s = mol_db[m]    
+            if s == 'FALSE':
                 universe[m] = s  
             else:
                 mol = smiles(s, name=m,allowAbstract=True)   
                 if mol not in universe:     
                     universe[m] = mol  
+
     return universe
+
+# load molecule data form KEGG database
+mol_db = {}
+with open('./Additional_ Files/KEGG_MoleculeDB.txt','r') as f:
+    lines = f.readlines()
+for line in lines:
+    line = line.split(',')
+    sm = line[1].split('\n')
+    mol_db[line[0]] = sm[0]
 
 # load reaction data form KEGG database
 with open('./Additional_Files/REACTION_RCLASS_DATA.txt','r') as in_f:
@@ -323,72 +374,77 @@ count_aam_list = []
 count_miss_list = [] 
 
 # Load all Reaction rules witch AAMs should be generated
-path = sys.argv[2]
+path = sys.argv[1]
+path_results = sys.argv[2]
 rules_names = os.listdir(path)        
 universe = {} # List of all known Molecules by KEGG DB  
 
 # Create a list of DPO-rules which were already tried
 done_list = []
-with open('output_rxns.txt','r') as f:
-    lines = f.readlines()    
-for i in lines:
-    done_list.append(i.strip())
-
 
 for rule in rules_names:  
-    if rule in done_list:
-        continue
-    # Complete universe             
+    found = False # marker if a aam could be generated 
+    # complete universe       
     universe = createMoleculeDatabase(reaction_data[rule],universe)
-    
-    # write logbook
-    with open(f"./output_rxns.txt", mode="a") as outp:
-        outp.write(rule+'\n')        
-    
-    found = False # Marker if an Atom to Atom Map could be generated      
-    rule_variations = os.listdir(path+'/'+rule)     
+    rule_variations = os.listdir(path+'/'+rule) # find all rules for one reaction     
+ 
     for rule_var in rule_variations:
-        print('TRY ', rule_var)
-        var_succ = False # Marker if a variation of a rule could generated a aam
+        var_succ = False # marker if a variation of a rule could generated a aam 
         
-        # Add rule
+        with open(path_results+'/output_rxns_Variants.txt','r') as f:
+             lines = f.readlines()
+        for line in lines:
+            line = line.split('\n')
+            done_list.append(line[0])
+        if rule_var in done_list:
+            continue
+            
+        # write logbook
+        with open(path_results+"/output_rxns_Variants.txt", mode="a") as outp:
+            outp.write(rule_var+'\n')
+
+        # add rule
         b = [ruleGML(path+'/'+rule+'/'+rule_var, add=False,printStereoWarnings=False)]
 
         # generated educts and products
         educ,prod,subspace = create_Educts_and_Products(reaction_data,path,rule,rule_var,universe)
-        subspace = educ + prod
-        
+             
         # Create Network        
         dg = DG(labelSettings=LabelSettings(LabelType.Term, LabelRelation.Specialisation),graphDatabase=educ)
         dg.build().apply(subspace, ruleGML(path+'/'+rule+'/'+rule_var, add=False,printStereoWarnings=False), onlyProper=False)
             
-        # Find atom-to-atom maps in network
-        found,count_aam,count_aam_list,var_succ = find_AAMs(dg,found,count_aam,count_aam_list,var_succ)
+        # find atom-to-atom maps in Network
+        found,count_aam,count_aam_list,var_succ = find_AAMs(dg,educ,prod,path_results,found,count_aam,count_aam_list)
 
         if found == False:
-            #  Try the opposite direction           
+            # try the opposite direction            
             a = [ruleGML(path+'/'+rule+'/'+rule_var,invert=True, add=False,printStereoWarnings=False)]
             
-            # Generate educts and products
+            # generated educts and products
             educ,prod,subspace = create_Educts_and_Products(reaction_data,path,rule,rule_var,universe)
-
+    
             # Create Network
             dg = DG(labelSettings=LabelSettings(LabelType.Term, LabelRelation.Specialisation),graphDatabase=educ)
-            dg.build().apply(subspace, ruleGML(path+'/'+rule+'/'+rule_var,invert=True, add=False,printStereoWarnings=False), onlyProper=False)
+            dg.build().apply(subspace, ruleGML(path+'/'+rule+'/'+rule_var,invert=True, add=False,printStereoWarnings=False), onlyProper=False)                               
             correct_edge = False         
             
-            # Find atom-to-atom maps in Network
-            found,count_aam,count_aam_list,var_succ = find_AAMs(dg,found,count_aam,count_aam_list,var_succ)
-
-        if found == False:
-            with open(f"./output_FalseRuleVariation.txt", mode="a") as outp:
+            # find atom-to-atom maps in Network
+            found,count_aam,count_aam_list,var_succ = find_AAMs(dg,educ,prod,path_results,found,count_aam,count_aam_list)
+        
+        if var_succ == False:
+            with open(path_results+"/output_FalseRuleVariation.txt", mode="a") as outp:
                 outp.write(rule_var+'\n')     
+                post.summarySection("Network False")     
+                dg.print()
+        else:
+             with open(path_results+"/output_TrueRuleVariation.txt", mode="a") as outp:
+                outp.write(rule_var+'\n')
 
     if found == False:
         count_miss += 1
         count_miss_list.append(rule)
-        with open(f"./output_FalseReactions.txt", mode="a") as outp:
-            outp.write(rule+'\n')            
+        with open(path_results+"/output_FalseReactions.txt", mode="a") as outp:
+            outp.write(rule+'\n')                  
 
 print('######################## SUMMARY #############################')
 print('Total No. of Reactions: ',len(rules_names))
