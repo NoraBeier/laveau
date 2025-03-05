@@ -100,4 +100,4 @@ The following files are created as output:
 
 * output_PartialReactions.txt: Lists all discovered partial atom-to-atom maps in SMILES format
 * output_GlobalReactions.txt: Lists all discovered global atom-to-atom maps in SMILES format
-* output_FalseReactions.txt: Lists all cases where no atom-to-atom mpas could be found
+* output_FalseReactions.txt: Lists all cases where no atom-to-atom maps could be found
