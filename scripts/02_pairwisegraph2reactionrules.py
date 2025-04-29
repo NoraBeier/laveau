@@ -166,6 +166,27 @@ def mol_to_graph(mol_str):
         G.add_edge(u, v, label=bond_type)
     return G
 
+# Create a netwokx graph out of SMILES-Format
+def smiles_to_graph(smiles):
+    mol = Chem.MolFromSmiles(smiles)
+    mol = Chem.AddHs(mol)
+    BOND_TYPE_MAP = {
+                Chem.rdchem.BondType.SINGLE: 1.0,
+                Chem.rdchem.BondType.DOUBLE: 2.0,
+                Chem.rdchem.BondType.TRIPLE: 3.0,
+                Chem.rdchem.BondType.AROMATIC: 1.5
+                }
+
+    G = nx.Graph()
+
+    for atom in mol.GetAtoms():
+        G.add_node(atom.GetIdx(), label=atom.GetSymbol())
+
+    for bond in mol.GetBonds():
+        bond_type = BOND_TYPE_MAP.get(bond.GetBondType(), 1.0)  
+        G.add_edge(bond.GetBeginAtomIdx(), bond.GetEndAtomIdx(), label=bond_type)
+    return G
+
 # Find all matches of the RDM Patterns in the Molecule    
 def subgraph_isomorphism_with_attributes(G, s,node_match,edge_match):  
 
@@ -319,8 +340,7 @@ def matchingMolecule(comp_pair,variation):
             filtered_list_var2['right'].append(variation['left'][l2])          
     
     # Check for R-M-D-atom consistency
-    if len(filtered_list_var1['left']) != 0 and len(filtered_list_var2['left']) == 0: 
-    
+    if len(filtered_list_var1['left']) != 0 and len(filtered_list_var2['left']) == 0:    
         variation = consistency_check(filtered_list_var1,comp_pair,True)       
     elif len(filtered_list_var1['left']) == 0 and len(filtered_list_var2['left']) != 0: 
         variation = consistency_check(filtered_list_var2,comp_pair,True)       
@@ -577,6 +597,17 @@ undefind_list = [s.strip() for s in lines]
 root_path = sys.argv[2]
 output_path = './02_Reaction Rules/'
 
+# load molecule data form KEGG database
+mol_db = {}
+with open('./Additional_ Files/KEGG_MoleculeDB.txt','r') as f:
+    lines = f.readlines()
+for line in lines:
+    line = line.split(',')
+    sm = line[1].split('\n')
+    mol_db[line[0]] = sm[0]
+    csv_data = {}
+
+
 # Try all RCLASSES from the compound_pairs
 for rxn in comp_list:
         # Time counter which continues the process if the RCLASS takes too much time
@@ -588,10 +619,8 @@ for rxn in comp_list:
             comp_graphs = [] #  Compound Graphs as Tuples 
             compound_ids = comp_list[rxn]
             for mol in compound_ids:
-                m1 = get_compound_mol(mol[0])
-                g1 = mol_to_graph(m1)
-                m2 = get_compound_mol(mol[1])
-                g2 = mol_to_graph(m2)
+                g1 = smiles_to_graph(mol_db[mol[0]])
+                g2 = smiles_to_graph(mol_db[mol[1]])
                 comp_graphs.append([g1,g2])
 
             # Load the molecular subgraphs 
@@ -652,8 +681,7 @@ for rxn in comp_list:
                 for pattern in subcombis_left_comp1:
                     pattern_list = connect_patterns(comp_graphs[0][0],pattern)
                     for i in pattern_list:
-                        rdm_pattern_left_comp1.append(i)
-               
+                        rdm_pattern_left_comp1.append(i)               
             if len(subcombis_left_comp2) != 0:
                 for pattern in subcombis_left_comp2:
                     pattern_list = connect_patterns(comp_graphs[0][1],pattern)
@@ -724,8 +752,6 @@ for rxn in comp_list:
             if len(variation1['left']) == 0 or len(variation1['right']) == 0:
                 if len(variation2['left']) != 0 and len(variation2['right']) != 0:
                     rule = variation2
-                    # Sub graph check: sometimes the differences are only one hydrogen node less, then delete this one
-                    rule = subgraph_check(rule)
                 else:
                     # Error: None of the variations are suitable
                     counter_notwork = counter_notwork + 1
@@ -736,9 +762,6 @@ for rxn in comp_list:
             # Case 2: Variation 1 works and variation 2 is empty. Then it has to be variation 1
             elif len(variation2['left']) == 0 or len(variation2['right']) == 0:   
                     rule = variation1                 
-                    # Sub graph check: Sometimes the differences are only one hydrogen node less, then delete this one
-                    rule = subgraph_check(rule)
-
             # Case 3: In both variations ware orking         
             elif len(variation2['left']) != 0 and len(variation2['right']) != 0:  
                 if len(variation1['left']) != 0 and len(variation1['right']) != 0:

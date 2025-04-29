@@ -576,7 +576,7 @@ def smallMolecule_Corr(graph,S,Context_Text,Left_Text,Right_Text,node_no,dict_no
                 edge_attributes = graph.get_edge_data(node, neighbor)
                 small_result = [neighbor, edge_attributes,node]  
                 
-                 # Check for double bond oxygens in the neighborhood of the non_atomtype_neighbors
+                # Check for double bond oxygens in the neighborhood of the non_atomtype_neighbors
                 alcohol = False
                 neighbors_of_non_atomtype_neighbors = [n for n in graph.neighbors(neighbor) if graph.nodes[n].get('label') == 'O' and  'atomtype' not in graph.nodes[n]]
                 if len(neighbors_of_non_atomtype_neighbors) > 0:

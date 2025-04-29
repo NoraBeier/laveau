@@ -80,7 +80,7 @@ def find_neighborhood(G,node,forbidden):
     # remove all neighbors with edges incl Attribute 'kind':3
     for edge in G.edges(node, data=True):
         u, v, attr = edge
-        if attr == {'kind': 3}:
+        if 'kind' in attr:
             if u != node and  u != forbidden:
                 neighbor_nodes.remove(u)
             if v != node and v != forbidden:
@@ -298,6 +298,7 @@ def translateMolecule(G, correct_graphs, forrest_count,print_no,root,print_r):
             correct_graphs.append(G)
         return
                             
+    check_edge = False                         
     # Try the different paths to connect the subgraph at the edges with attribute 'kind':3
     for neighbor_found, neighbor_partner in atom_to_atom:
         newgraph = G.copy()
@@ -388,7 +389,6 @@ def check_allAlternativCombis(G,list_alternatives,rxn,counter_work,counter_notwo
                     if data['atom'] != 'H':
                         r_count += 1
             if r_count > 1:
-
                 # Special case C6a with O6a (Carboxy-Endings)
                 for node, data in i.nodes(data=True):
                     if data['atomtype'] == 'r' and  data['atom'] == 'C':
