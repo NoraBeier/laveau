@@ -1340,6 +1340,11 @@ for rn in reactions.keys():
                                                             if len(attrs2['map']) != len(attrs1['map']):
                                                                 continue
                                                             if len(attrs2['map']) == 1:
+                                                                if attrs1['label']  == 'O': 
+                                                                    bindings_Right = [d['label'] for u, v, d in Right_new.edges(data=True) if node in (u, v) and 'label' in d]
+                                                                    bindings_Left = [d['label'] for u, v, d in Left_new.edges(data=True) if node_l in (u, v) and 'label' in d]
+                                                                    if (2.0 in bindings_Right) ^ (2.0 in bindings_Left):
+                                                                        continue                                                                
                                                                 node_r = node 
                                                                 seen_nodes.append(node)                                                  
                                                             else:
