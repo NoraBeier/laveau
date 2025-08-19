@@ -1,0 +1,18 @@
+Running Python Interpreter -----------------------------------------
+Executing code from '04_DPO2AAMs.py'
+04_DPO2AAMs.py:90: SyntaxWarning: invalid escape sequence '\]'
+  s = regex.sub(":([0-9]+)\]",":o\\1]",s)
+Traceback (most recent call last):
+  File "/home/nora/Githubs/AAMRuleTool/laveau/scripts/out/input", line 68, in <module>
+    include("04_DPO2AAMs.py")
+  File "/home/nora/Githubs/AAMRuleTool/laveau/scripts/out/input", line 46, in include
+    exec(code, globals())
+  File "04_DPO2AAMs.py", line 10, in <module>
+    from rdkit import Chem
+  File "/home/nora/.conda/envs/mod/lib/python3.12/site-packages/rdkit/Chem/__init__.py", line 16, in <module>
+    from rdkit.Chem import rdchem
+TypeError: No registered converter was able to produce a C++ rvalue of type std::string from this Python object of type str
+
+real	0m0.341s
+user	0m0.985s
+sys	0m0.056s

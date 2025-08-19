@@ -304,7 +304,7 @@ def translateMolecule(G, correct_graphs, forrest_count,print_no,root,print_r):
         newgraph = G.copy()
      
         con_check = connected_kind3_Edge(newgraph, neighbor_found, neighbor_partner, kind3[0], kind3[1])
-        if not con_check:)
+        if not con_check:
             return       
         translateMolecule(newgraph, correct_graphs,forrest_count,print_no,root,print_r)
         
@@ -437,7 +437,8 @@ def saveRule(G1,rxn,forrest_count,round_num):
             if 'kind' in attr:
                 del G1[u][v]['kind']
     # If all nodes have the same 'side' attribute, save the component as a GML file        
-    new_path = './01_RDM_Graphs/' + rxn + '_' + str(round_num)+'/'
+    folder = folder_path.split('.gexf')
+    new_path = path+'/01_RDM_Graphs/' + rxn + '_' + str(round_num)+'/'
     if os.path.exists(new_path) == False:
         os.makedirs(new_path)
     filename = new_path + str(rxn) + '_' + str(unique_side_values) + '_' +  str(forrest_count)+ '.gml'                     
@@ -458,12 +459,19 @@ list_alternatives = [path_ori,path_alt1,path_alt2,path_alt3,path_alt4]
 
 # Load RDM pattern trees
 folder_path = sys.argv[1]
-file_names = glob.glob(folder_path + '*.gexf')
+file_names = glob.glob(folder_path + '/*.gexf')
 graphs = []
 out_name = []
+
+# create output folder
+path = os.path.dirname(folder_path)
+if not os.path.exists(path+'/01_RDM_Graphs/'):
+    os.makedirs(path+'/01_RDM_Graphs/')
+
 for file_name in file_names:
     rxn = file_name.split('.gexf')
-    out_name.append(rxn[0])
+    rxn = rxn[0].split('/')
+    out_name.append(rxn[len(rxn)-1])
     graph = nx.read_gexf(file_name)
     graphs.append(graph)
 out_name_old = out_name
@@ -488,8 +496,8 @@ for graph in graphs:
             G.add_edge(*new_edge,kind=3)
       
         rxn = out_name.pop(0)  
-        rxn = rxn.split('/')
-        rxn = rxn[2]
+        #rxn = rxn.split('/')
+        #rxn = rxn[2]
         multi_check = False
         
         # Try to translate the RDM trees in molecular structure

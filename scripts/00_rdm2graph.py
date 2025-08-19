@@ -1,6 +1,7 @@
 import networkx as nx
 import sys
 import re 
+import os
 import matplotlib.pyplot as plt
 
 not_work = []  # List of reactions which could not be built up
@@ -60,6 +61,11 @@ rc_list = []
 
 # Read file
 path = sys.argv[1]
+
+# create output folder
+if not os.path.exists(os.path.dirname(path)+'/00_RCLASS_Graphs/'):
+    os.makedirs(os.path.dirname(path)+'/00_RCLASS_Graphs/')
+
 with open(path, 'r') as f:
     lines = f.readlines()
 for line in lines:
@@ -138,7 +144,7 @@ for line in lines:
             multi_graph.add_edges_from(right_graph.edges(data=True))
             multi_graph.add_nodes_from(right_graph.nodes(data=True))    
                  
-    nx.write_gexf(multi_graph, './00_RCLASS_Graphs/' + str(rxn) + '.gexf')  
+    nx.write_gexf(multi_graph, os.path.dirname(path)+'/00_RCLASS_Graphs/' + str(rxn) + '.gexf')  
     count_correct = count_correct +1        
 
 print('#### Number of Generated RCLASS Graphs: ',count_correct)

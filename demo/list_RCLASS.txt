@@ -1,0 +1,4 @@
+RC00001	C1x-C8x:*-*:C2x+C2y-C8x+C8y N1y-N5y:*-*:C1y+C2x+C2x-C1y+C8x+C8x
+RC00159	C1y-C1y:C1x+*-*+O2x:C1y+O1a-C1y+O1a O1a-O2x:*-C1y:C1c-C1y O2x-O1a:C1z-*:C1y-C1y
+RC00600	C1a-C1x:*-C1y:C5a-C1z C5a-C1z:*-O2x:C1a+C6a+O5a-C1x+C6a+O1a
+RC00064	N1a-N1b:*-C5a:C1c-C1c

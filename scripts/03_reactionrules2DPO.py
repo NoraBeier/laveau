@@ -13,6 +13,7 @@ import requests
 import glob
 import re
 import os
+import sys
 
 
 #This function takes a nested list and returns a flat list.
@@ -663,19 +664,25 @@ no_reactions_true = 0 # Number of reactions were a DPO-Rule successful could be 
 no_reaction_toBig = 0 # Number of reactions were the combinatorics became too big
 missing_comp = 0 # Number of missing compounds
 
+input_path = sys.argv[1]
 
-if not os.path.exists('./03_stats'):
-    os.makedirs('./03_stats')
+output_path = os.path.dirname(input_path)
 
-log_unsucc = './03_stats/UnsuccessfulRXN.log'
-log_big = './03_stats/ToBigReactions.log'
-log_missC = './03_stats/faild_Compounds.txt'
+if not os.path.exists(output_path+'/03_DPO_Rules/'):
+    os.makedirs(output_path+'/03_DPO_Rules/')
+if not os.path.exists(output_path+'/03_stats'):
+    os.makedirs(output_path+'/03_stats')    
 
+log_unsucc = output_path+'UnsuccessfulRXN.log'
+log_big = output_path+'ToBigReactions.log'
+log_missC = output_path+'faild_Compounds.txt'
+
+output_path = output_path+'/03_DPO_Rules/'
 
 # Load reaction data
 reactions = {}
-input_path = './Additional_Files/REACTION_RCLASS_DATA.txt'
-with open(input_path,'r') as in_f:
+path = './Additional_Files/REACTION_RCLASS_DATA.txt'
+with open(path,'r') as in_f:
     lines = in_f.readlines()
 rn = None
 comp = None
@@ -696,7 +703,6 @@ for line in lines:
             rc = None  
 
 # Start progress  
-input_path = sys.argv[2]
 for rn in reactions.keys():
         toBig = False # Marks if some cases have to be scripted because of combinatoric explosion   
         no_reactions = no_reactions+1   
@@ -1507,9 +1513,7 @@ for rn in reactions.keys():
                                     continue         
                                 
                                 # Write gml file                       
-                                if not os.path.exists('./03_DPO_Rules/'+rn):
-                                    os.makedirs('./03_DPO_Rules/'+rn) 
-                                with open('./03_DPO_Rules/'+rn+'/'+rn+'_'+str(no)+'.gml', 'w') as out: 
+                                with open(output_path+rn+'/'+rn+'_'+str(no)+'.gml', 'w') as out: 
                                     out.write('rule [\n')
                                     out.write(' ruleID "' + rn + '"\n')
                                     out.write(' left [\n') 

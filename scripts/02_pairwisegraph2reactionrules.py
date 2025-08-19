@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import requests
 import re
+import sys
 from itertools import product
 from rdkit import Chem
 from rdkit.Chem import AllChem
@@ -574,7 +575,7 @@ counter_notwork = 0
 counter_input = 0
 
 # Read the linked names of components for each RCLASS
-with open('./Additional_ Files/RCLASS_RPAIR.txt', 'r') as f:
+with open('./Additional_Files/RCLASS_RPAIR.txt', 'r') as f:
     lines = f.readlines()
 comp_list = {}    
 for line in lines:
@@ -590,16 +591,20 @@ for line in lines:
             comp_list[rxn] = rpair_list
 
 # Read list with undefined atom RCLASSES
-with open('./Additional_ Files/List_UndefindAoms.txt', 'r') as f:
+with open('./Additional_Files/List_UndefindAoms.txt', 'r') as f:
     lines = f.readlines()
 undefind_list = [s.strip() for s in lines]
 
-root_path = sys.argv[2]
-output_path = './02_Reaction Rules/'
+root_path = sys.argv[1]
+output_path = os.path.dirname(root_path)
+if not os.path.exists(output_path+'/02_ReactionRules/'):
+    os.makedirs(output_path+'/02_ReactionRules/')
+output_path = output_path+'/02_ReactionRules/'
+rclass = {d.split("_",1)[0] for d in os.listdir(root_path) if os.path.isdir(os.path.join(root_path, d))}
 
 # load molecule data form KEGG database
 mol_db = {}
-with open('./Additional_ Files/KEGG_MoleculeDB.txt','r') as f:
+with open('./Additional_Files/KEGG_MoleculeDB_updated.txt','r') as f:
     lines = f.readlines()
 for line in lines:
     line = line.split(',')
@@ -610,6 +615,8 @@ for line in lines:
 
 # Try all RCLASSES from the compound_pairs
 for rxn in comp_list:
+    if rxn in rclass:
+        print('process:',rxn)
         # Time counter which continues the process if the RCLASS takes too much time
         start_time = time.time()
         # Pass the RCLASSES which as a undefined atom in the reaction
