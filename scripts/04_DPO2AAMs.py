@@ -456,7 +456,7 @@ for rule in rules_names:
     rule_variations = os.listdir(path + "/" + rule)  # find all rules for one reaction
 
     for rule_var in rule_variations:
-
+        print(rule_var)
         var_succ = False  # marker if a variation of a rule could generated a aam
 
         # generated educts and products

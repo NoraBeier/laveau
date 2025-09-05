@@ -14,10 +14,7 @@ import glob
 import re
 import os
 import sys
-<<<<<<< HEAD
 from tqdm import tqdm
-=======
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
 
 
 # shows the progress over the algorithm
@@ -874,7 +871,6 @@ no_reaction_toBig = 0  # Number of reactions were the combinatorics became too b
 missing_comp = 0  # Number of missing compounds
 
 input_path = sys.argv[1]
-<<<<<<< HEAD
 input_rxn = sys.argv[2]
 output_path = os.path.dirname(input_path)
 
@@ -899,26 +895,6 @@ for rxn in rxns:
 reactions = {}
 path = "./Additional_Files/REACTION_RCLASS_DATA.txt"
 with open(path, "r") as in_f:
-=======
-
-output_path = os.path.dirname(input_path)
-
-if not os.path.exists(output_path+'/03_DPO_Rules/'):
-    os.makedirs(output_path+'/03_DPO_Rules/')
-if not os.path.exists(output_path+'/03_stats'):
-    os.makedirs(output_path+'/03_stats')    
-
-log_unsucc = output_path+'UnsuccessfulRXN.log'
-log_big = output_path+'ToBigReactions.log'
-log_missC = output_path+'faild_Compounds.txt'
-
-output_path = output_path+'/03_DPO_Rules/'
-
-# Load reaction data
-reactions = {}
-path = './Additional_Files/REACTION_RCLASS_DATA.txt'
-with open(path,'r') as in_f:
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
     lines = in_f.readlines()
 rn = None
 comp = None
@@ -938,7 +914,6 @@ for line in lines:
             comp = None
             rc = None
 
-<<<<<<< HEAD
 # Start progress
 for rn in rxn_list:
     toBig = False  # Marks if some cases have to be scripted because of combinatoric explosion
@@ -954,43 +929,6 @@ for rn in rxn_list:
             rc_list.append(rc)
         elif rc.startswith("C"):
             rc_comp_list.append(rc)
-=======
-# Start progress  
-for rn in reactions.keys():
-        toBig = False # Marks if some cases have to be scripted because of combinatoric explosion   
-        no_reactions = no_reactions+1   
-        print('START REACTION', rn)
-        # Load RCLASS  
-        rxn_split = reactions[rn]['rclass'].split("'")
-        rc_list = []
-        rc_comp_list = []
-        rc_graphs = {}
-        for rc in rxn_split:
-            if rc.startswith('RC'):
-                rc_list.append(rc)
-            elif rc.startswith('C'):
-                rc_comp_list.append(rc)
-        
-        #Check if there are RCLASSes listed
-        if len(rc_list) == 0:
-            exit()
-        else:
-            rclass_num = len(rc_list) # Is used later to check the right number of R-atoms
-            
-        for rc in range(len(rc_list)):
-            filepath = input_path+rc_list[rc]
-            gml_files = glob.glob(filepath+'/*.gml', recursive=True)
-            if len(gml_files) == 0:
-                break
-            graphs_l = []
-            graphs_r = []    
-            for g in gml_files:      
-                if 'left' in g:
-                    graphs_l.append(nx.read_gml(g))
-                if 'right' in g:
-                    graphs_r.append(nx.read_gml(g))          
-            rc_graphs[rc_list[rc]] = {rc_comp_list[rc]:{'left':graphs_l,'right':graphs_r}}     
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
 
     # Check if there are RCLASSes listed
     if len(rc_list) == 0:
@@ -1966,7 +1904,6 @@ for rn in reactions.keys():
                                     if found == False:
                                         hydrogen_right.append(None)
 
-<<<<<<< HEAD
                         for node in Right_new.nodes():
                             attrs = Right_new.nodes[node]
                             if "map" in attrs and node not in seen_nodes:
@@ -1978,82 +1915,6 @@ for rn in reactions.keys():
                                     seen_nodes.append(node)
                                     hydrogen_left.append(None)
                                     hydrogen_right.append(node)
-=======
-                                for edge in R1.edges():
-                                    node1 = None
-                                    node2 = None
-                                    for i in dict_node:
-                                        if edge[0] == dict_node[i][1]:
-                                            node1 = i
-                                        if edge[1] == dict_node[i][1]:
-                                            node2 = i
-                                    if node1 == None or node2 == None:
-                                        R1.remove_edge(edge[0],edge[1])                                
-                                    else:
-                                        trans_Redges[(str(node1),str(node2))] = R1.edges[edge]['label']          
-                                
-                                # Check for common edges
-                                seen_edges = []
-                                for e1,e2 in trans_Ledges.keys():
-                                    # First node order e1,e2
-                                    if (e1,e2) in trans_Redges.keys() and (e1,e2) not in seen_edges:
-                                        seen_edges.append((e1,e2))
-                                        if trans_Ledges[(e1,e2)] == trans_Redges[(e1,e2)]:
-                                            Context_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Ledges[(e1,e2)] + '" ]\n')
-                                        else:
-                                            Left_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Ledges[(e1,e2)] + '" ]\n')
-                                            Right_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Redges[(e1,e2)]+ '" ]\n')
-                                    # Second node order e2,e1
-                                    elif (e2,e1) in trans_Redges.keys() and (e2,e1) not in seen_edges:
-                                        seen_edges.append((e2,e1))
-                                        if trans_Ledges[(e1,e2)] == trans_Redges[(e2,e1)]:
-                                            Context_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Ledges[(e1,e2)] + '" ]\n')
-                                        else:
-                                            Left_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Ledges[(e1,e2)] + '" ]\n')
-                                            Right_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Redges[(e2,e1)]+ '" ]\n')
-                               
-                                # Check for edges only of one side       
-                                for e1,e2 in trans_Ledges.keys():             
-                                    if (e1,e2) not in seen_edges and (e2,e1) not in seen_edges:
-                                        Left_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Ledges[(e1,e2)] + '" ]\n')                 
-                                for e1,e2 in trans_Redges.keys():                
-                                    if (e1,e2) not in seen_edges and (e2,e1) not in seen_edges:
-                                        Right_Text.append('  edge [ source '+ e1 + ' target '+ e2 + ' label "' + trans_Redges[(e1,e2)] + '" ]\n')         
-                                              
-                                # Check if changes are found on left or right side
-                                if len(Left_Text) == 0 and len(Right_Text) == 0: 
-                                    continue         
-                                
-                                # Write gml file                       
-                                with open(output_path+rn+'/'+rn+'_'+str(no)+'.gml', 'w') as out: 
-                                    out.write('rule [\n')
-                                    out.write(' ruleID "' + rn + '"\n')
-                                    out.write(' left [\n') 
-                                    for i in Left_Text:
-                                        out.write(i)
-                                    out.write(' ]\n')
-                                    out.write(' context [\n')    
-                                    for i in Context_Text:
-                                        out.write(i)                      
-                                    out.write(' ]\n')      
-                                    out.write(' right [\n')        
-                                    for i in Right_Text:
-                                        out.write(i)        
-                                    out.write(' ]\n')    
-                                    out.write(']\n')          
-                                succ = True
-                                no = no + 1
-        
-        if succ == False:
-            if toBig == True:
-                no_reaction_toBig = no_reaction_toBig +1
-                with open(log_big,'a') as log:
-                    log.write(str(rn)+' No. of graphs:'+str(count_graph)+'\n')
-            else:
-                no_reactions_false = no_reactions_false+1    
-                with open(log_unsucc,'a') as log:
-                    log.write(str(rn)+'\n')
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
 
                         # If no hydrogens got lost then write them in the 'Context'
                         # If right graph has more hydrogens then write this into 'Right' and as H+ in 'Left'

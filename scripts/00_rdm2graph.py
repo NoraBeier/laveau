@@ -1,10 +1,6 @@
 import networkx as nx
 import sys
-<<<<<<< HEAD
 import re
-=======
-import re 
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
 import os
 import matplotlib.pyplot as plt
 
@@ -70,7 +66,6 @@ count_correct = 0
 rc_list = []
 
 # Read file
-<<<<<<< HEAD
 input_path = sys.argv[1]
 
 # create output folder
@@ -79,15 +74,6 @@ if not os.path.exists(os.path.dirname(input_path) + "/00_RCLASS_Graphs/"):
 
 # load RCLASS
 with open("./Additional_Files/list_RCLASS", "r") as f:
-=======
-path = sys.argv[1]
-
-# create output folder
-if not os.path.exists(os.path.dirname(path)+'/00_RCLASS_Graphs/'):
-    os.makedirs(os.path.dirname(path)+'/00_RCLASS_Graphs/')
-
-with open(path, 'r') as f:
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
     lines = f.readlines()
 rclass = {}
 for line in lines:
@@ -221,17 +207,7 @@ for rxn in rxns:
                 nx.set_node_attributes(multi_graph, attr)
         for right_graph in graphs_right:
             multi_graph.add_edges_from(right_graph.edges(data=True))
-<<<<<<< HEAD
             multi_graph.add_nodes_from(right_graph.nodes(data=True))
-=======
-            multi_graph.add_nodes_from(right_graph.nodes(data=True))    
-                 
-    nx.write_gexf(multi_graph, os.path.dirname(path)+'/00_RCLASS_Graphs/' + str(rxn) + '.gexf')  
-    count_correct = count_correct +1        
-
-print('#### Number of Generated RCLASS Graphs: ',count_correct)
-print('#### Number of RCLASS with undefined Atoms: ',count_undefinedAtoms)
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
 
         nx.write_gexf(
             multi_graph,

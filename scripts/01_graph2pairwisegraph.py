@@ -355,16 +355,6 @@ def translateMolecule(G, correct_graphs, forrest_count, print_no, root, print_r)
     # Try the different paths to connect the subgraph at the edges with attribute 'kind':3
     for neighbor_found, neighbor_partner in atom_to_atom:
         newgraph = G.copy()
-<<<<<<< HEAD
-=======
-     
-        con_check = connected_kind3_Edge(newgraph, neighbor_found, neighbor_partner, kind3[0], kind3[1])
-        if not con_check:
-            return       
-        translateMolecule(newgraph, correct_graphs,forrest_count,print_no,root,print_r)
-        
-def check_allAlternativCombis(G,list_alternatives,rxn,counter_work,counter_notwork,counter_multi):
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
 
         con_check = connected_kind3_Edge(
             newgraph, neighbor_found, neighbor_partner, kind3[0], kind3[1]
@@ -564,19 +554,11 @@ def saveRule(G1, rxn, forrest_count, round_num):
         if "side" in G1.nodes[node]:
             del G1.nodes[node]["side"]
         for u, v, attr in G1.edges(data=True):
-<<<<<<< HEAD
             if "kind" in attr:
                 del G1[u][v]["kind"]
     # If all nodes have the same 'side' attribute, save the component as a GML file
     folder = folder_path.split(".gexf")
     new_path = path + "/01_RDM_Graphs/" + rxn + "_" + str(round_num) + "/"
-=======
-            if 'kind' in attr:
-                del G1[u][v]['kind']
-    # If all nodes have the same 'side' attribute, save the component as a GML file        
-    folder = folder_path.split('.gexf')
-    new_path = path+'/01_RDM_Graphs/' + rxn + '_' + str(round_num)+'/'
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
     if os.path.exists(new_path) == False:
         os.makedirs(new_path)
     filename = (
@@ -606,17 +588,12 @@ list_alternatives = [path_ori, path_alt1, path_alt2, path_alt3, path_alt4]
 
 # Load RDM pattern trees
 folder_path = sys.argv[1]
-<<<<<<< HEAD
 file_names = glob.glob(folder_path + "/*.gexf")
-=======
-file_names = glob.glob(folder_path + '/*.gexf')
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
 graphs = []
 out_name = []
 
 # create output folder
 path = os.path.dirname(folder_path)
-<<<<<<< HEAD
 if not os.path.exists(path + "/01_RDM_Graphs/"):
     os.makedirs(path + "/01_RDM_Graphs/")
 
@@ -624,15 +601,6 @@ for file_name in file_names:
     rxn = file_name.split(".gexf")
     rxn = rxn[0].split("/")
     out_name.append(rxn[len(rxn) - 1])
-=======
-if not os.path.exists(path+'/01_RDM_Graphs/'):
-    os.makedirs(path+'/01_RDM_Graphs/')
-
-for file_name in file_names:
-    rxn = file_name.split('.gexf')
-    rxn = rxn[0].split('/')
-    out_name.append(rxn[len(rxn)-1])
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
     graph = nx.read_gexf(file_name)
     graphs.append(graph)
 out_name_old = out_name
@@ -659,36 +627,10 @@ for graph in graphs:
         new_edge = tuple(f"graph_{node}" for node in edge)
         G.add_edge(*new_edge, kind=3)
 
-<<<<<<< HEAD
     rxn = out_name.pop(0)
     # rxn = rxn.split('/')
     # rxn = rxn[2]
     multi_check = False
-=======
-       # Load the RDM pattern trees
-        G = nx.Graph()
-        node_attrList = []
-        for node, attrs in graph.nodes(data=True):
-            new_node_id = f"graph_{node}"  
-            G.add_node(new_node_id, **attrs)
-            node_attrList.append(attrs['label'])
-        for edge in graph.edges():
-            new_edge = tuple(f"graph_{node}" for node in edge) 
-            G.add_edge(*new_edge,kind=3)
-      
-        rxn = out_name.pop(0)  
-        #rxn = rxn.split('/')
-        #rxn = rxn[2]
-        multi_check = False
-        
-        # Try to translate the RDM trees in molecular structure
-        counter_work,counter_notwork,counter_multi = check_allAlternativCombis(G,list_alternatives,rxn,counter_work,counter_notwork,counter_multi)
-        
-print('Number of TOTAL read Files:', len(file_names))
-print('Number of constructed Molecule-Substructure: ',counter_work)    
-print('Number of constructed but multiple solutions Structures:', counter_multi)
-print('not working Molecules: ',counter_notwork)   
->>>>>>> dbf44ddee9f253e25b1bdc61ff6cc036e1c13eb1
 
     # Try to translate the RDM trees in molecular structure
     counter_work, counter_notwork, counter_multi = check_allAlternativCombis(
