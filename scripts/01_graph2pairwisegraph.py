@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from rdkit import Chem
@@ -11,6 +13,8 @@ from networkx.algorithms import isomorphism as iso
 from itertools import combinations_with_replacement
 from itertools import product
 from tqdm import tqdm
+
+fp = os.path.dirname(os.path.abspath(__file__))
 
 ############################################
 # code only work with python version > 3.6 #
@@ -579,11 +583,11 @@ def saveRule(G1, rxn, forrest_count, round_num):
 # 3 = edges of the graph
 
 # Paths for Labelgraphs
-path_ori = "./Labels/01_Labelgraphs/"
-path_alt1 = "./Labels/01_Labelgraphs_alternativ/"
-path_alt2 = "./Labels/01_Labelgraphs_alternativ2/"
-path_alt3 = "./Labels/01_Labelgraphs_alternativ3/"
-path_alt4 = "./Labels/01_Labelgraphs_alternativ4/"
+path_ori = fp+"/Labels/01_Labelgraphs/"
+path_alt1 = fp+"/Labels/01_Labelgraphs_alternativ/"
+path_alt2 = fp+"/Labels/01_Labelgraphs_alternativ2/"
+path_alt3 = fp+"/Labels/01_Labelgraphs_alternativ3/"
+path_alt4 = fp+"/Labels/01_Labelgraphs_alternativ4/"
 list_alternatives = [path_ori, path_alt1, path_alt2, path_alt3, path_alt4]
 
 # Load RDM pattern trees

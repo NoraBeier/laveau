@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -13,6 +15,8 @@ from collections import OrderedDict
 from collections import defaultdict
 import time
 
+
+fp = os.path.dirname(os.path.abspath(__file__))
 
 def print_Rule(graph, label):
     pos = nx.spring_layout(graph)
@@ -650,7 +654,7 @@ counter_notwork = 0
 counter_input = 0
 
 # Read the linked names of components for each RCLASS
-with open("./Additional_Files/RCLASS_RPAIR.txt", "r") as f:
+with open(fp+"/Additional_Files/RCLASS_RPAIR.txt", "r") as f:
     lines = f.readlines()
 comp_list = {}
 for line in lines:
@@ -666,7 +670,7 @@ for line in lines:
             comp_list[rxn] = rpair_list
 
 # Read list with undefined atom RCLASSES
-with open("./Additional_Files/List_UndefindAoms.txt", "r") as f:
+with open(fp+"/Additional_Files/List_UndefindAoms.txt", "r") as f:
     lines = f.readlines()
 undefind_list = [s.strip() for s in lines]
 
@@ -683,7 +687,7 @@ rclass = {
 
 # load molecule data form KEGG database
 mol_db = {}
-with open("./Additional_Files/KEGG_MoleculeDB.txt", "r") as f:
+with open(fp+"/Additional_Files/KEGG_MoleculeDB.txt", "r") as f:
     lines = f.readlines()
 for line in lines:
     line = line.split(",")

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from networkx.algorithms import isomorphism as iso
 from networkx.algorithms.isomorphism import GraphMatcher
 from rdkit.Chem import AllChem
@@ -16,6 +18,7 @@ import os
 import sys
 from tqdm import tqdm
 
+fp = os.path.dirname(os.path.abspath(__file__))
 
 # shows the progress over the algorithm
 def progress_bar(progress, total, length=40):
@@ -893,7 +896,7 @@ for rxn in rxns:
 
 # Load reaction data
 reactions = {}
-path = "./Additional_Files/REACTION_RCLASS_DATA.txt"
+path = fp+"/Additional_Files/REACTION_RCLASS_DATA.txt"
 with open(path, "r") as in_f:
     lines = in_f.readlines()
 rn = None

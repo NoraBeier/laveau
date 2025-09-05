@@ -1,8 +1,12 @@
+#!/usr/bin/env python3
+
 import networkx as nx
 import sys
 import re
 import os
 import matplotlib.pyplot as plt
+
+fp = os.path.dirname(os.path.abspath(__file__))
 
 not_work = []  # List of reactions which could not be built up
 multiple_solutions = []  # List of reaction
@@ -73,7 +77,7 @@ if not os.path.exists(os.path.dirname(input_path) + "/00_RCLASS_Graphs/"):
     os.makedirs(os.path.dirname(input_path) + "/00_RCLASS_Graphs/")
 
 # load RCLASS
-with open("./Additional_Files/list_RCLASS", "r") as f:
+with open(fp+"/Additional_Files/list_RCLASS", "r") as f:
     lines = f.readlines()
 rclass = {}
 for line in lines:
@@ -91,7 +95,7 @@ for line in lines:
     rclass[equation[0]] = equation[1].split(" ")
 
 # Load reaction data
-path = "./Additional_Files/REACTION_RCLASS_DATA.txt"
+path = fp+"/Additional_Files/REACTION_RCLASS_DATA.txt"
 with open(path, "r") as in_f:
     data = in_f.read()
 reactions = {}
