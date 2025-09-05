@@ -1,6 +1,4 @@
-<<<<<<< HEAD:scripts/Additional_ Files/KEGG_MoleculeDB.txt
 C00001,O
-=======
 C09663,[H][C@@]12C[C@@H](CC[C@@]1(C)CCC=C2C)C(C)(C)O
 C19893,CC1=C2C[C@H](C(C)(C)O)CC[C@]2(C)CCC1
 C05803,COC1=CC(=O)C=C(C\C=C(/C)CC\C=C(/C)CC\C=C(/C)CC\C=C(/C)CC\C=C(/C)CCC=C(C)C)C1=O 
