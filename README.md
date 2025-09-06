@@ -36,8 +36,9 @@ Tool only works under python version > 3.6
 You can create a custom conda environment to run laveau as follows:
 
 ```console
-conda create -n laveau -c conda-forge -c jakobandersen python=3.10 numpy==1.24.4 libtiff texlive-core mod=0.17.0 networkx==2.8.8 matplotlib rdkit regex requests tqdm
-conda activate laveau
+conda create -n laveau -c jakobandersen -c conda-forge mod=0.17.0 texlive-core numpy==1.24.4
+conda activate base
+conda install -c conda-forge matplotlib networkx==2.8.8 rdkit regex requests tqdm
 ```
 
 Download laveau via git and validate the installation using 'demo/run_demo.sh'.
