@@ -6,7 +6,7 @@ import re
 import os
 import matplotlib.pyplot as plt
 
-fp = os.path.dirname(os.path.abspath(__file__))
+fp = os.environ.get('LAVEAU_PATH', '.')
 
 not_work = []  # List of reactions which could not be built up
 multiple_solutions = []  # List of reaction

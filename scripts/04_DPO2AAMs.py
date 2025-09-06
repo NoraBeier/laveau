@@ -15,7 +15,7 @@ from rdkit.Chem import AllChem
 from rdkit.Chem.MolStandardize import rdMolStandardize
 import openbabel
 
-fp = os.path.dirname(os.path.abspath(__file__))
+fp = os.environ.get('LAVEAU_PATH', '.')
 
 config.rule.ignoreConstraintsDuringInversion = True
 
@@ -388,7 +388,7 @@ def createMoleculeDatabase(reaction_data, universe):
 
 # load molecule data form KEGG database
 mol_db = {}
-with open("./Additional_Files/KEGG_MoleculeDB.txt", "r") as f:
+with open(fp+"/Additional_Files/KEGG_MoleculeDB.txt", "r") as f:
     lines = f.readlines()
 for line in lines:
     line = line.split(",")
@@ -396,7 +396,7 @@ for line in lines:
     mol_db[line[0]] = sm[0]
 
 # load reaction data form KEGG database
-with open("./Additional_Files/REACTION_RCLASS_DATA.txt", "r") as in_f:
+with open(fp+"/Additional_Files/REACTION_RCLASS_DATA.txt", "r") as in_f:
     lines = in_f.readlines()
 
 reaction_data = {}

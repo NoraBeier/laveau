@@ -14,7 +14,7 @@ from itertools import combinations_with_replacement
 from itertools import product
 from tqdm import tqdm
 
-fp = os.path.dirname(os.path.abspath(__file__))
+fp = os.environ.get('LAVEAU_PATH', '.')
 
 ############################################
 # code only work with python version > 3.6 #

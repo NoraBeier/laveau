@@ -16,7 +16,7 @@ from collections import defaultdict
 import time
 
 
-fp = os.path.dirname(os.path.abspath(__file__))
+fp = os.environ.get('LAVEAU_PATH', '.')
 
 def print_Rule(graph, label):
     pos = nx.spring_layout(graph)

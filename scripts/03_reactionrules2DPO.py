@@ -18,7 +18,7 @@ import os
 import sys
 from tqdm import tqdm
 
-fp = os.path.dirname(os.path.abspath(__file__))
+fp = os.environ.get('LAVEAU_PATH', '.')
 
 # shows the progress over the algorithm
 def progress_bar(progress, total, length=40):
