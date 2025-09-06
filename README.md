@@ -14,15 +14,55 @@ We developed laveau, a tool that computes explicit DPO rules from KEGG reactions
 
 Please note that all KEGG database reactions with status 06/04/2024 have already been processed by the tool. 
 
-#### A demonstration of five sample reactions is available in demo/fun_demo.sh. For this purpose, simpler reactions were chosen so that the complete run finishes in about five minutes. Please note that runtime may increase considerably when using more complex examples.
+#### A demonstration of five sample reactions is available in 'demo/run_demo.sh'. For this purpose, simpler reactions were chosen so that the complete run finishes in about five minutes. Please note that runtime may increase considerably when using more complex examples.
 
 Tool only works under python version > 3.6 
 
 ### Required packages
 
-* networkx 2.8.8
-* matplotlib 3.7.1
-* rdkit 2023.9.2
-* MØD version 0.16.0
+* numpy==1.24.4
+* networkx >=2.8.8
+* matplotlib >=3.7.1
+* rdkit >=2023.9.2
+* MØD version >= 0.17.0
+* regex
+* requests
+* tqdm
+
+## Installation
+
+### Conda
+
+You can create a custom conda environment to run laveau as follows:
+
+```console
+conda create -n laveau -c conda-forge -c jakobandersen python=3.10 numpy==1.24.4 libtiff texlive-core mod=0.17.0 networkx==2.8.8 matplotlib rdkit regex requests tqdm
+conda activate laveau
+```
+
+Download laveau via git and validate the installation using 'demo/run_demo.sh'.
+
+If you want to use the scripts in a working directory outside of the 'scripts' folder, add the'scripts' folder to PATH and additionally set:
+
+```console
+export LAVEAU_PATH="<your path to the laveau scripts folder>"
+```
+
+
+### Docker
+
+A Docker image with an installation is available at Docker Hub. It can be simply run as
+
+```console
+docker run -it norabeier/laveau
+```
+
+Laveu is installed at '/laveau'. The demo can be fund at '/laveau/demo'. You will start in the directory '/workdir'.
+You may bind local folders and users as normal. E.g. to pass on the current work directory and user
+
+```console
+docker run -it -v $(pwd):/workdir -u $(id -u):$(id -g) norabeier/laveau
+```
+
 
 
