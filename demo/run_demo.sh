@@ -2,6 +2,13 @@
 
 DIRNAME=$(dirname "$0")
 
+if [[ -z "${LAVEAU_PATH}" ]]; then
+  PV=$(realpath "$DIRNAME/../scripts")
+  export LAVEAU_PATH=$PV
+else
+  PV="${LAVEAU_PATH}"
+fi
+
 OUT=.
 if [ "$#" -eq 1 ]; then
 OUT=$1
@@ -9,11 +16,6 @@ mkdir -p $OUT
 cd $OUT
 fi
 
-if [[ -z "${LAVEAU_PATH}" ]]; then
-  PV="../scripts"
-else
-  PV="${LAVEAU_PATH}"
-fi
 
 cp $DIRNAME/rxn_demo.txt .
 
