@@ -441,8 +441,8 @@ count_aam_list = []
 count_miss_list = []
 
 # Load all Reaction rules witch AAMs should be generated
-path = '../demo/03_DPO_Rules/'
-path_results = '../demo/04_AAM_results/'
+path = './03_DPO_Rules/'
+path_results = './04_AAM_results/'
 if not os.path.exists(path_results):
     os.makedirs(path_results)
 
