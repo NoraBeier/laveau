@@ -675,7 +675,7 @@ with open(fp+"/Additional_Files/List_UndefindAoms.txt", "r") as f:
 undefind_list = [s.strip() for s in lines]
 
 root_path = sys.argv[1]
-output_path = os.path.dirname(root_path)
+output_path = os.path.dirname(root_path) or '.'
 if not os.path.exists(output_path + "/02_ReactionRules/"):
     os.makedirs(output_path + "/02_ReactionRules/")
 output_path = output_path + "/02_ReactionRules/"

@@ -597,7 +597,7 @@ graphs = []
 out_name = []
 
 # create output folder
-path = os.path.dirname(folder_path)
+path = os.path.dirname(folder_path) or '.'
 if not os.path.exists(path + "/01_RDM_Graphs/"):
     os.makedirs(path + "/01_RDM_Graphs/")
 

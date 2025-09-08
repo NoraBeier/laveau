@@ -71,10 +71,11 @@ rc_list = []
 
 # Read file
 input_path = sys.argv[1]
+dn = os.path.dirname(input_path) or '.'
 
 # create output folder
-if not os.path.exists(os.path.dirname(input_path) + "/00_RCLASS_Graphs/"):
-    os.makedirs(os.path.dirname(input_path) + "/00_RCLASS_Graphs/")
+if not os.path.exists(dn + "/00_RCLASS_Graphs/"):
+    os.makedirs(dn + "/00_RCLASS_Graphs/")
 
 # load RCLASS
 with open(fp+"/Additional_Files/list_RCLASS", "r") as f:
@@ -215,7 +216,7 @@ for rxn in rxns:
 
         nx.write_gexf(
             multi_graph,
-            os.path.dirname(input_path) + "/00_RCLASS_Graphs/" + str(r) + ".gexf",
+            dn + "/00_RCLASS_Graphs/" + str(r) + ".gexf",
         )
     count_correct = count_correct + 1
 

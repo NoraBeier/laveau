@@ -875,7 +875,7 @@ missing_comp = 0  # Number of missing compounds
 
 input_path = sys.argv[1]
 input_rxn = sys.argv[2]
-output_path = os.path.dirname(input_path)
+output_path = os.path.dirname(input_path) or '.' 
 
 if not os.path.exists(output_path + "/03_DPO_Rules/"):
     os.makedirs(output_path + "/03_DPO_Rules/")
