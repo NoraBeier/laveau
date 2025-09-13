@@ -4,6 +4,8 @@
 This repository contains scripts to extract and preprocess data from the [KEGG REST API](https://www.kegg.jp/kegg/rest/keggapi.html). 
 The workflow ensures reproducibility by documenting API endpoints, data formats, and transformation steps.
 
+All data in Additional Files were created using KEGG Version 105.0 (May 2023).
+
 ## Overview
 
 The scripts in this repository support three main tasks:
