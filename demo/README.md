@@ -4,7 +4,7 @@
 
 The following reactions are processed:
 
-<p align="center">
+<p align="left">
   <img src="./fig/reaction_demo.png" width="600"/>
 </p>
 
@@ -34,13 +34,13 @@ sh run_demo.sh
 
 After executing *laveau*, the following **DPO rules** were generated:
 
-<p align="center">
+<p align="left">
   <img src="./fig/DPO_Rules_demo.png" width="600"/>
 </p>
 
 The corresponding **Atom-to-Atom Maps** are shown below:
 
-<p align="center">
+<p align="left">
   <img src="./fig/aams_demo.png" width="600"/>
 </p>
 
