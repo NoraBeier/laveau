@@ -1,0 +1,627 @@
++++ Total of reactions with equivalent maps: 91
++++ Total of reactions with non-equivalent maps: 34
+#,R00217
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0008232593536376953
+#,R00223
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0008399486541748047
+#,R00224
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.00043582916259765625
+#,R00268
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0007674694061279297
+#,R00272
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0005290508270263672
+#,R00325
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.000762939453125
+#,R00350
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0015196800231933594
+#,R00362
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0013909339904785156
+#,R00363
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0009279251098632812
+#,R00470
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0006420612335205078
+#,R00477
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0007774829864501953
+#,R00479
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0006701946258544922
+#,R00636
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0005338191986083984
+#,R00749
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.00034499168395996094
+#,R00750
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0006361007690429688
+#,R01016
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0007770061492919922
+#,R01025
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.000400543212890625
+#,R01123
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0011677742004394531
+#,R01336
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010447502136230469
+#,R01366
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0005350112915039062
+#,R01393
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0004749298095703125
+#,R01394
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0008699893951416016
+#,R01645
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0009789466857910156
+#,R01647
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0012946128845214844
+#,R01936
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0016090869903564453
+#,R02009
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0017287731170654297
+#,R02129
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0024557113647460938
+#,R02243
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.001089334487915039
+#,R02398
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0006060600280761719
+#,R02644
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.002114534378051758
+#,R02937
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0007183551788330078
+#,R03052
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0007205009460449219
+#,R03070
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0005452632904052734
+#,R03127
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0005049705505371094
+#,R03128
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0008137226104736328
+#,R03178
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0012202262878417969
+#,R03627
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.002042055130004883
+#,R03747
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0011029243469238281
+#,R03892
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0014319419860839844
+#,R03966
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010602474212646484
+#,R04053
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0009701251983642578
+#,R04133
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.001346588134765625
+#,R04134
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0006272792816162109
+#,R04281
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0028548240661621094
+#,R04323
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010304450988769531
+#,R04379
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0012042522430419922
+#,R04380
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0008730888366699219
+#,R04482
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0007691383361816406
+#,R04489
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0007147789001464844
+#,R05069
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0009050369262695312
+#,R05071
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0006887912750244141
+#,R05098
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0004994869232177734
+#,R05171
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0004506111145019531
+#,R05173
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0011372566223144531
+#,R05298
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010993480682373047
+#,R05374
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0008628368377685547
+#,R05377
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.002746105194091797
+#,R05381
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0005218982696533203
+#,R05382
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0007426738739013672
+#,R05389
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.000652313232421875
+#,R05774
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.000591278076171875
+#,R06958
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0016126632690429688
+#,R06973
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0004425048828125
+#,R07163
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.002433300018310547
+#,R07183
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0005340576171875
+#,R07393
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0014870166778564453
+#,R07420
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0007083415985107422
+#,R07520
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.006647825241088867
+#,R07523
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.006047725677490234
+#,R07534
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.00610661506652832
+#,R07540
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.006212472915649414
+#,R07639
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010068416595458984
+#,R07872
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0012485980987548828
+#,R08199
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0007917881011962891
+#,R08277
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0012586116790771484
+#,R08278
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.00125885009765625
+#,R08290
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0016486644744873047
+#,R08291
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0012981891632080078
+#,R08324
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010221004486083984
+#,R08328
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0016808509826660156
+#,R08329
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0009059906005859375
+#,R08330
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0009558200836181641
+#,R08335
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0009319782257080078
+#,R08336
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0007462501525878906
+#,R08337
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0005633831024169922
+#,R08373
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.001994609832763672
+#,R08425
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010609626770019531
+#,R08620
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010492801666259766
+#,R08624
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.024137258529663086
+#,R08628
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.001237630844116211
+#,R08634
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0013737678527832031
+#,R08641
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0014307498931884766
+#,R08645
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0015769004821777344
+#,R08648
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.001005411148071289
+#,R08681
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0007643699645996094
+#,R08682
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0008523464202880859
+#,R08695
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.002420186996459961
+#,R08696
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.002866983413696289
+#,R08865
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0004506111145019531
+#,R09052
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0005114078521728516
+#,R09127
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.00028228759765625
+#,R09128
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0005564689636230469
+#,R09149
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0008924007415771484
+#,R09448
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.002044677734375
+#,R09455
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.002117156982421875
+#,R09456
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0023152828216552734
+#,R09482
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0005872249603271484
+#,R09483
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0006213188171386719
+#,R09708
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0008447170257568359
+#,R09848
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.001338958740234375
+#,R09962
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0017387866973876953
+#,R10111
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.001630544662475586
+#,R10506
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0007128715515136719
+#,R11100
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0004937648773193359
+#,R11101
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0005233287811279297
+#,R11344
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0004687309265136719
+#,R11749
+maps given	2
+classes ITS	2
+result ITS	not equivalent maps
+time ITS	0.0009717941284179688
+#,R11853
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0047321319580078125
+#,R11854
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.004843711853027344
+#,R11855
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0073070526123046875
+#,R11866
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.001477956771850586
+#,R12698
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.008317232131958008
+#,R12895
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010058879852294922
+#,R13094
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.001344442367553711
+#,R13095
+maps given	2
+classes ITS	1
+result ITS	equivalent maps
+time ITS	0.0010685920715332031
