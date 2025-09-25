@@ -34,11 +34,10 @@ def merge_files(file1, file2, output_file):
             out.write(f"RXNmap,{entries1[id_]}\n")
             out.write(f"LAVmap,{entries2[id_]}\n")
 
-# Beispielaufruf:
 #merge_files(
-    "/homes/biertank/nora/Githubs/Copy/AAMRuleTool/laveau_demo/benchmark/globalAAMs_rxnmapper.txt",
-    "/homes/biertank/nora/Githubs/Copy/AAMRuleTool/laveau_demo/benchmark/globalAAMs.smiles",
-    "merged.txt"
+    "../map_list/globalAAMs_rxnmapper.txt",
+    "../map_list/globalAAMs.smiles",
+    "../map_list/input_EEquAAM.smiles"
 #    )
 
 
@@ -46,9 +45,9 @@ import re
 
 def normalize_and_filter(input_file, output_file):
     """
-    1. Entfernt Hydrogene aus den SMILES (CH2->C, OH->O, NH2->N, H+ weg)
-    2. Schreibt nur die Blöcke, bei denen file1- und file2-Zeilen
-       die gleiche Anzahl an Buchstaben (A–Z, a–z) haben.
+    1. Removes hydrogen atoms from the SMILES (CH2->C, OH->O, NH2->N, H+ removed)
+    2. Writes only those blocks where file1 and file2 lines
+       have the same number of letters (A–Z, a–z).
     """
 
     hydrogen_pattern = re.compile(r"\[H[+]?(:\d+)?\]")
@@ -96,10 +95,5 @@ def normalize_and_filter(input_file, output_file):
                 i += 1
 
 
-normalize_and_filter("merged.txt", "merged_noH.txt")
+normalize_and_filter("../map_list/input_EEquAAM.smiles", "../map_list/input_EEquAAM_noH.smiles")
 
-
-
-## Result EEquAAM
-#- whose maps where all equivalent (_out_alleq.txt): 91
-#- with non-equivalent maps (_out_noneq.txt): 34
